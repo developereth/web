@@ -449,6 +449,7 @@
                 const wrapper = document.createElement('div');
                 wrapper.className = 'builder-block';
                 wrapper.dataset.type = type;
+                wrapper.draggable = true;
                 wrapper.innerHTML = this.blocks[type];
                 
                 const toolbar = document.createElement('div');
@@ -464,6 +465,38 @@
                 wrapper.addEventListener('click', function(e) {
                     e.stopPropagation();
                     Builder.selectBlock(this);
+                });
+
+                wrapper.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', 'reorder');
+                    e.dataTransfer.setData('block-index', Array.from(Builder.canvas.children).indexOf(this));
+                    this.style.opacity = '0.5';
+                });
+
+                wrapper.addEventListener('dragend', function() {
+                    this.style.opacity = '1';
+                });
+
+                wrapper.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.classList.add('drag-over');
+                });
+
+                wrapper.addEventListener('dragleave', function() {
+                    this.classList.remove('drag-over');
+                });
+
+                wrapper.addEventListener('drop', function(e) {
+                    e.stopPropagation();
+                    this.classList.remove('drag-over');
+                    const fromIndex = parseInt(e.dataTransfer.getData('block-index'));
+                    const blocks = Array.from(Builder.canvas.children);
+                    const fromBlock = blocks[fromIndex];
+                    if (fromBlock && fromBlock !== this) {
+                        Builder.canvas.insertBefore(fromBlock, this.nextSibling === fromBlock ? this : this);
+                        Builder.showToast('Block moved');
+                    }
                 });
                 
                 this.canvas.appendChild(wrapper);
