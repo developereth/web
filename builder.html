@@ -402,6 +402,9 @@
             <button class="category-btn" onclick="Builder.openPicker('text')">
                 <div class="cat-icon">T</div> Add Text Block
             </button>
+            <button class="category-btn" onclick="Builder.openPicker('image')">
+                <div class="cat-icon">I</div> Add Image
+            </button>
 
             <div class="section-label">Business</div>
             <button class="category-btn" onclick="Builder.openPicker('contact')">
@@ -451,6 +454,33 @@
         </div>
     </div>
 
+    <!-- Image Upload Modal -->
+    <div class="picker-overlay" id="image-upload-overlay">
+        <div class="picker-modal" style="max-width:500px;">
+            <div class="picker-header">
+                <h3>Add Image</h3>
+                <button class="picker-close" onclick="Builder.closeImageUpload()">&times;</button>
+            </div>
+            <div style="padding:20px;text-align:center;">
+                <div style="margin-bottom:20px;padding:30px;border:2px dashed #475569;border-radius:12px;cursor:pointer;" onclick="document.getElementById('image-file-input').click()">
+                    <div style="font-size:3rem;margin-bottom:8px;">📁</div>
+                    <p style="color:#94a3b8;">Click to upload from your device</p>
+                    <p style="color:#64748b;font-size:0.8rem;">JPG, PNG, WebP up to 5MB</p>
+                </div>
+                <input type="file" id="image-file-input" accept="image/*" hidden onchange="Builder.handleImageUpload(this.files)">
+                <div style="margin-bottom:12px;color:#94a3b8;">or</div>
+                <button class="category-btn" style="width:auto;display:inline-flex;" onclick="Builder.openFreeStore()">
+                    🎁 Browse Free Image Store
+                </button>
+                <div style="margin-bottom:12px;color:#94a3b8;margin-top:12px;">or</div>
+                <div>
+                    <input type="text" id="image-url-input" placeholder="Paste image URL here" style="width:100%;padding:10px;background:#334155;border:1px solid #475569;border-radius:6px;color:white;font-family:inherit;">
+                    <button class="category-btn" style="width:100%;margin-top:8px;" onclick="Builder.insertImageFromUrl()">Use URL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="builder-toast" id="builder-toast"></div>
 
     <script>
@@ -460,6 +490,7 @@
             emptyState: null,
             siteNameInput: null,
             currentCategory: null,
+            pendingImageTarget: null,
 
             init() {
                 this.canvas = document.getElementById('builder-canvas');
@@ -483,6 +514,7 @@
                 }
                 this.setupCanvasClick();
                 this.setupPickerClose();
+                this.setupImageUploadClose();
             },
 
             getDesignByType(type) {
@@ -515,6 +547,10 @@
                         { type: 'text', name: 'Heading + Text', desc: 'Title with paragraph', icon: 'T2', html: `<div style="padding:20px;font-family:'Inter',sans-serif;"><h2 style="font-size:1.8rem;font-weight:700;color:#1e293b;margin-bottom:10px;">Section Heading</h2><p style="color:#64748b;line-height:1.7;">Edit this text to describe your business. Click Edit to change the heading and this paragraph.</p></div>` },
                         { type: 'text', name: 'Two Text Columns', desc: 'Text split into two columns', icon: 'T3', html: `<div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px;font-family:'Inter',sans-serif;"><div><p style="color:#64748b;line-height:1.7;">First column text. Edit this to share your story or describe your services in detail.</p></div><div><p style="color:#64748b;line-height:1.7;">Second column text. Use this space to highlight additional information about your business.</p></div></div>` }
                     ],
+                    image: [
+                        { type: 'single-image', name: 'Full Width Image', desc: 'One large image across the page', icon: 'I1', html: `<div style="padding:20px;text-align:center;font-family:'Inter',sans-serif;"><div style="background:#f1f5f9;border:2px dashed #cbd5e1;border-radius:12px;padding:40px;cursor:pointer;" onclick="Builder.openImageUpload(this)"><div style="font-size:3rem;">🖼️</div><p style="color:#64748b;">Click to add image</p></div></div>` },
+                        { type: 'single-image', name: 'Image with Caption', desc: 'Image with text below', icon: 'I2', html: `<div style="padding:20px;text-align:center;font-family:'Inter',sans-serif;"><div style="background:#f1f5f9;border:2px dashed #cbd5e1;border-radius:12px;padding:40px;cursor:pointer;margin-bottom:10px;" onclick="Builder.openImageUpload(this)"><div style="font-size:3rem;">🖼️</div><p style="color:#64748b;">Click to add image</p></div><p style="color:#64748b;font-size:0.9rem;">Image caption goes here</p></div>` }
+                    ],
                     contact: [
                         { type: 'contact', name: 'Simple Form', desc: 'Name, email, message fields', icon: 'C1', html: `<div style="padding:40px 20px;max-width:450px;margin:0 auto;font-family:'Inter',sans-serif;"><h2 style="text-align:center;margin-bottom:20px;">Contact Us</h2><form onsubmit="event.preventDefault();alert('Message sent!');" style="display:flex;flex-direction:column;gap:10px;"><input placeholder="Name" style="padding:10px;border:1px solid #e2e8f0;border-radius:6px;"><input placeholder="Email" style="padding:10px;border:1px solid #e2e8f0;border-radius:6px;"><textarea placeholder="Message" rows="3" style="padding:10px;border:1px solid #e2e8f0;border-radius:6px;"></textarea><button type="submit" style="padding:12px;background:#6366f1;color:white;border:none;border-radius:6px;cursor:pointer;">Send</button></form></div>` },
                         { type: 'contact', name: 'Contact with Info', desc: 'Form with phone and email', icon: 'C2', html: `<div style="padding:40px 20px;display:grid;grid-template-columns:1fr 1fr;gap:30px;font-family:'Inter',sans-serif;"><div><h2 style="margin-bottom:16px;">Get in Touch</h2><p style="color:#64748b;margin-bottom:12px;">📞 +251 911 573 334</p><p style="color:#64748b;">📧 agoodperception@gmail.com</p></div><form onsubmit="event.preventDefault();alert('Message sent!');" style="display:flex;flex-direction:column;gap:10px;"><input placeholder="Name" style="padding:10px;border:1px solid #e2e8f0;border-radius:6px;"><input placeholder="Email" style="padding:10px;border:1px solid #e2e8f0;border-radius:6px;"><textarea placeholder="Message" rows="3" style="padding:10px;border:1px solid #e2e8f0;border-radius:6px;"></textarea><button type="submit" style="padding:12px;background:#6366f1;color:white;border:none;border-radius:6px;cursor:pointer;">Send</button></form></div>` }
@@ -526,7 +562,7 @@
                         { type: 'testimonials', name: '3 Reviews', desc: 'Three customer testimonials', icon: 'R1', html: `<div style="padding:30px 20px;background:#f8fafc;font-family:'Inter',sans-serif;"><h2 style="text-align:center;margin-bottom:20px;">Testimonials</h2><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;"><div style="background:white;padding:16px;border-radius:10px;"><p style="color:#64748b;font-size:0.85rem;">"Amazing service!"</p><strong>Abebe K.</strong></div><div style="background:white;padding:16px;border-radius:10px;"><p style="color:#64748b;font-size:0.85rem;">"Best in Ethiopia!"</p><strong>Tigist M.</strong></div><div style="background:white;padding:16px;border-radius:10px;"><p style="color:#64748b;font-size:0.85rem;">"Professional work."</p><strong>Dawit G.</strong></div></div></div>` }
                     ],
                     gallery: [
-                        { type: 'gallery', name: '3 Column Gallery', desc: 'Three images per row', icon: 'G1', html: `<div style="padding:20px;font-family:'Inter',sans-serif;"><h2 style="text-align:center;margin-bottom:16px;">Gallery</h2><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;"><div style="aspect-ratio:1;background:#d4c5b9;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:2rem;">📸</div><div style="aspect-ratio:1;background:#b8c5b0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:2rem;">📸</div><div style="aspect-ratio:1;background:#c4b5c4;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:2rem;">📸</div></div></div>` }
+                        { type: 'gallery', name: '3 Column Gallery', desc: 'Three images per row', icon: 'G1', html: `<div style="padding:20px;font-family:'Inter',sans-serif;"><h2 style="text-align:center;margin-bottom:16px;">Gallery</h2><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;"><div style="aspect-ratio:1;background:#d4c5b9;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:2rem;cursor:pointer;" onclick="Builder.openImageUpload(this)">📸</div><div style="aspect-ratio:1;background:#b8c5b0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:2rem;cursor:pointer;" onclick="Builder.openImageUpload(this)">📸</div><div style="aspect-ratio:1;background:#c4b5c4;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:2rem;cursor:pointer;" onclick="Builder.openImageUpload(this)">📸</div></div></div>` }
                     ],
                     youtube: [
                         { type: 'youtube', name: 'Video Embed', desc: 'Responsive YouTube video', icon: 'Y1', html: `<div style="padding:20px;max-width:700px;margin:0 auto;font-family:'Inter',sans-serif;"><h2 style="text-align:center;margin-bottom:16px;">Watch Our Video</h2><div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen></iframe></div></div>` }
@@ -545,9 +581,9 @@
                 
                 const categoryNames = {
                     header: 'Header Designs', features: 'Features Designs', about: 'About Section Designs',
-                    text: 'Text Block Designs', contact: 'Contact Form Designs', pricing: 'Pricing Table Designs',
-                    testimonials: 'Testimonial Designs', gallery: 'Gallery Designs', youtube: 'YouTube Video',
-                    social: 'Social Links Designs'
+                    text: 'Text Block Designs', image: 'Image Designs', contact: 'Contact Form Designs',
+                    pricing: 'Pricing Table Designs', testimonials: 'Testimonial Designs',
+                    gallery: 'Gallery Designs', youtube: 'YouTube Video', social: 'Social Links Designs'
                 };
                 
                 title.textContent = categoryNames[category] || 'Choose a Design';
@@ -581,6 +617,66 @@
                     this.addBlock(design.html, type);
                 }
                 this.closePicker();
+            },
+
+            openImageUpload(target) {
+                this.pendingImageTarget = target;
+                document.getElementById('image-upload-overlay').classList.add('active');
+            },
+
+            closeImageUpload() {
+                document.getElementById('image-upload-overlay').classList.remove('active');
+                this.pendingImageTarget = null;
+                document.getElementById('image-file-input').value = '';
+                document.getElementById('image-url-input').value = '';
+            },
+
+            setupImageUploadClose() {
+                document.getElementById('image-upload-overlay').addEventListener('click', function(e) {
+                    if (e.target === this) Builder.closeImageUpload();
+                });
+            },
+
+            handleImageUpload(files) {
+                if (!files || files.length === 0) return;
+                const file = files[0];
+                
+                if (file.size > 5 * 1024 * 1024) {
+                    this.showToast('Image too large. Max 5MB.');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.insertImageToTarget(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            },
+
+            insertImageFromUrl() {
+                const url = document.getElementById('image-url-input').value.trim();
+                if (!url) {
+                    this.showToast('Please enter an image URL.');
+                    return;
+                }
+                this.insertImageToTarget(url);
+            },
+
+            openFreeStore() {
+                this.closeImageUpload();
+                window.open('/web/image-picker.html', 'ImagePicker', 'width=800,height=600');
+            },
+
+            insertImageToTarget(imageUrl) {
+                if (this.pendingImageTarget) {
+                    if (this.pendingImageTarget.tagName === 'IMG') {
+                        this.pendingImageTarget.src = imageUrl;
+                    } else {
+                        this.pendingImageTarget.innerHTML = `<img src="${imageUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" alt="Image">`;
+                    }
+                    this.showToast('Image added successfully.');
+                }
+                this.closeImageUpload();
             },
 
             addBlock(html, type) {
@@ -679,6 +775,14 @@
                             if (newUrl) link.href = newUrl;
                         }
                     });
+                    return;
+                }
+
+                if (block.dataset.type === 'single-image' || block.dataset.type === 'gallery') {
+                    const imageAreas = block.querySelectorAll('[onclick*="openImageUpload"]');
+                    if (imageAreas.length > 0) {
+                        this.openImageUpload(imageAreas[0]);
+                    }
                     return;
                 }
                 
