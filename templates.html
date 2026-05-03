@@ -1,15 +1,442 @@
-loadTemplate(templateId) {
-    const templateData = JSON.parse(localStorage.getItem('wb_selected_template'));
-    if (!templateData || templateData.id !== templateId) return;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Templates - WebBuilder | Ethiopia 2026</title>
+    <meta name="description" content="Choose from professional pre-built website templates for your Ethiopian business. Restaurant, business, portfolio, and more.">
     
-    if (this.emptyState) this.emptyState.style.display = 'none';
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    templateData.blocks.forEach(blockType => {
-        if (this.blocks[blockType]) {
-            this.addBlock(blockType);
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        body {
+            background: var(--bg-secondary);
         }
-    });
+        
+        .templates-hero {
+            padding: 140px 0 40px;
+            text-align: center;
+        }
+        
+        .templates-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+        
+        .templates-hero p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .template-filters {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        
+        .filter-btn {
+            padding: 8px 18px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1.5px solid var(--border);
+            background: white;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            padding-bottom: 60px;
+        }
+        
+        .template-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .template-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .template-preview {
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            position: relative;
+        }
+        
+        .template-preview.restaurant {
+            background: linear-gradient(135deg, #3d3226, #6b5e51);
+        }
+        
+        .template-preview.business {
+            background: linear-gradient(135deg, #1e3a5f, #2563eb);
+        }
+        
+        .template-preview.portfolio {
+            background: linear-gradient(135deg, #4a1942, #8b5cf6);
+        }
+        
+        .template-preview.shop {
+            background: linear-gradient(135deg, #0f766e, #14b8a6);
+        }
+        
+        .template-preview.landing {
+            background: linear-gradient(135deg, #1e1b4b, #6366f1);
+        }
+        
+        .template-preview.blog {
+            background: linear-gradient(135deg, #7c2d12, #ea580c);
+        }
+        
+        .template-preview .preview-text {
+            text-align: center;
+        }
+        
+        .template-preview .preview-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        
+        .template-preview .preview-subtitle {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .template-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.4);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .template-info {
+            padding: 20px;
+        }
+        
+        .template-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+        
+        .template-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+        
+        .template-info .template-features {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        
+        .template-feature-tag {
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            background: var(--bg-secondary);
+            border-radius: 100px;
+            color: var(--text-secondary);
+        }
+        
+        .use-template-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        
+        .use-template-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        @media (max-width: 1024px) {
+            .template-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .template-grid {
+                grid-template-columns: 1fr;
+            }
+            .templates-hero h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/web/index.html" class="navbar-brand">Web<span>Builder</span></a>
+                <ul class="navbar-menu">
+                    <li><a href="/web/index.html">Home</a></li>
+                    <li><a href="/web/templates.html" class="active">Templates</a></li>
+                    <li><a href="/web/services.html">Services</a></li>
+                    <li><a href="/web/pricing.html">Pricing</a></li>
+                    <li><a href="/web/contact.html">Contact</a></li>
+                </ul>
+                <div class="navbar-actions">
+                    <a href="/web/builder.html" class="btn btn-outline btn-sm">Blank Builder</a>
+                    <a href="/web/login.html" class="btn btn-primary btn-sm">Login</a>
+                    <button class="navbar-toggle" aria-label="Menu">
+                        <span></span><span></span><span></span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="templates-hero">
+        <div class="container">
+            <span class="section-tag">Templates</span>
+            <h1>Choose a Template</h1>
+            <p>Start with a pre-built design and customize it your way</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="template-filters">
+            <button class="filter-btn active" onclick="filterTemplates('all', this)">All</button>
+            <button class="filter-btn" onclick="filterTemplates('restaurant', this)">Restaurant</button>
+            <button class="filter-btn" onclick="filterTemplates('business', this)">Business</button>
+            <button class="filter-btn" onclick="filterTemplates('portfolio', this)">Portfolio</button>
+            <button class="filter-btn" onclick="filterTemplates('shop', this)">Online Shop</button>
+            <button class="filter-btn" onclick="filterTemplates('landing', this)">Landing Page</button>
+            <button class="filter-btn" onclick="filterTemplates('blog', this)">Blog</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="template-grid" id="template-grid"></div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/web/index.html" class="navbar-brand" style="color:white;">Web<span>Builder</span></a>
+                    <p>Professional websites and AI solutions for Ethiopian businesses.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="/web/services.html">Web Development</a></li>
+                        <li><a href="/web/services.html">AI Solutions</a></li>
+                        <li><a href="/web/builder.html">Website Builder</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="/web/about.html">About</a></li>
+                        <li><a href="/web/templates.html">Templates</a></li>
+                        <li><a href="/web/contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="/web/contact.html">Help</a></li>
+                        <li><a href="mailto:agoodperception@gmail.com">Email</a></li>
+                        <li><a href="https://t.me/powr_addis">Telegram</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 WebBuilder. All rights reserved. Made in Ethiopia.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        const templates = [
+            {
+                id: 'restaurant-1',
+                name: 'Restaurant Pro',
+                description: 'Complete restaurant website with menu, gallery, and contact form.',
+                category: 'restaurant',
+                features: ['Menu', 'Gallery', 'Contact', 'Map'],
+                previewClass: 'restaurant',
+                previewTitle: 'Restaurant',
+                blocks: ['hero', 'heading', 'text', 'image', 'heading', 'text', 'contact']
+            },
+            {
+                id: 'restaurant-2',
+                name: 'Café Starter',
+                description: 'Simple café website with hero image and menu list.',
+                category: 'restaurant',
+                features: ['Hero', 'Menu', 'Contact'],
+                previewClass: 'restaurant',
+                previewTitle: 'Café',
+                blocks: ['hero', 'heading', 'text', 'button', 'contact']
+            },
+            {
+                id: 'business-1',
+                name: 'Business Corporate',
+                description: 'Professional corporate site with services, team, and contact.',
+                category: 'business',
+                features: ['Services', 'Team', 'Contact', 'Map'],
+                previewClass: 'business',
+                previewTitle: 'Corporate',
+                blocks: ['hero', 'features', 'heading', 'text', 'testimonials', 'contact']
+            },
+            {
+                id: 'business-2',
+                name: 'Startup Landing',
+                description: 'Modern landing page for startups and tech companies.',
+                category: 'business',
+                features: ['Hero', 'Features', 'Pricing', 'CTA'],
+                previewClass: 'business',
+                previewTitle: 'Startup',
+                blocks: ['hero', 'features', 'pricing', 'button', 'testimonials']
+            },
+            {
+                id: 'portfolio-1',
+                name: 'Creative Portfolio',
+                description: 'Showcase for designers, photographers, and artists.',
+                category: 'portfolio',
+                features: ['Gallery', 'About', 'Contact'],
+                previewClass: 'portfolio',
+                previewTitle: 'Portfolio',
+                blocks: ['hero', 'image', 'heading', 'text', 'image', 'contact']
+            },
+            {
+                id: 'portfolio-2',
+                name: 'Agency Showcase',
+                description: 'Agency website with portfolio grid and team section.',
+                category: 'portfolio',
+                features: ['Portfolio', 'Team', 'Services', 'Contact'],
+                previewClass: 'portfolio',
+                previewTitle: 'Agency',
+                blocks: ['hero', 'features', 'heading', 'text', 'testimonials', 'contact']
+            },
+            {
+                id: 'shop-1',
+                name: 'Online Store',
+                description: 'E-commerce ready layout with product grid and cart.',
+                category: 'shop',
+                features: ['Products', 'Cart', 'Checkout'],
+                previewClass: 'shop',
+                previewTitle: 'Shop',
+                blocks: ['hero', 'features', 'pricing', 'button', 'contact']
+            },
+            {
+                id: 'landing-1',
+                name: 'SaaS Landing',
+                description: 'High-converting landing page for software products.',
+                category: 'landing',
+                features: ['Hero', 'Features', 'Pricing', 'CTA', 'FAQ'],
+                previewClass: 'landing',
+                previewTitle: 'SaaS',
+                blocks: ['hero', 'features', 'pricing', 'testimonials', 'button']
+            },
+            {
+                id: 'blog-1',
+                name: 'Blog Magazine',
+                description: 'Content-focused blog layout with sidebar.',
+                category: 'blog',
+                features: ['Posts', 'Sidebar', 'Newsletter'],
+                previewClass: 'blog',
+                previewTitle: 'Blog',
+                blocks: ['hero', 'heading', 'text', 'image', 'heading', 'text', 'social']
+            }
+        ];
+        
+        let currentFilter = 'all';
+        
+        function filterTemplates(category, btn) {
+            currentFilter = category;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderTemplates();
+        }
+        
+        function renderTemplates() {
+            const grid = document.getElementById('template-grid');
+            const filtered = currentFilter === 'all' ? templates : templates.filter(t => t.category === currentFilter);
+            
+            grid.innerHTML = filtered.map(template => `
+                <div class="template-card" onclick="useTemplate('${template.id}')">
+                    <div class="template-preview ${template.previewClass}">
+                        <div class="preview-text">
+                            <div class="preview-title">${template.previewTitle}</div>
+                            <div class="preview-subtitle">Website Template</div>
+                        </div>
+                        <span class="template-badge">${template.category}</span>
+                    </div>
+                    <div class="template-info">
+                        <h3>${template.name}</h3>
+                        <p>${template.description}</p>
+                        <div class="template-features">
+                            ${template.features.map(f => `<span class="template-feature-tag">${f}</span>`).join('')}
+                        </div>
+                        <button class="use-template-btn">Use This Template</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function useTemplate(templateId) {
+            const template = templates.find(t => t.id === templateId);
+            if (template) {
+                localStorage.setItem('wb_selected_template', JSON.stringify(template));
+                window.location.href = '/web/builder.html';
+            }
+        }
+        
+        renderTemplates();
+    </script>
     
-    localStorage.removeItem('wb_selected_template');
-    this.showToast('Template loaded. Customize it your way.');
-}
+</body>
+</html>
