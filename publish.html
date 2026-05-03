@@ -252,7 +252,7 @@
     
     <script>
         const GITHUB_USER = 'developereth';
-        const WORKER_URL = 'https://webbuilder-api.YOUR-WORKER-NAME.workers.dev';
+        const WORKER_URL = 'https://webbuilder-api.developereth.workers.dev';
         
         function getSiteName() {
             const params = new URLSearchParams(window.location.search);
@@ -301,7 +301,7 @@
             if (!content) {
                 document.getElementById('site-url').textContent = 'No site content found';
                 document.getElementById('publish-status').className = 'publishing-status error';
-                document.getElementById('publish-status').textContent = 'Please save your site first before publishing.';
+                document.getElementById('publish-status').textContent = 'Go back to the builder and click SAVE first, then PUBLISH.';
                 return;
             }
             
@@ -335,13 +335,7 @@
                 console.error('Publish error:', error);
                 document.getElementById('site-url').textContent = 'Connection error';
                 document.getElementById('publish-status').className = 'publishing-status error';
-                document.getElementById('publish-status').textContent = 'Cannot connect to publishing server. Check your internet.';
-                
-                // Fallback: show preview URL
-                const fallbackUrl = getSiteUrl();
-                document.getElementById('site-url').textContent = fallbackUrl;
-                document.getElementById('site-url').href = '#';
-                document.getElementById('publish-status').textContent += ' The site may still publish. Check back in 1 minute.';
+                document.getElementById('publish-status').textContent = 'Cannot connect to publishing server. The Worker URL may be wrong.';
             }
         }
         
