@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Builder - WebBuilder | Ethiopia 2026</title>
-    <meta name="description" content="Build your professional website in minutes with our free drag-and-drop builder. No coding needed. Publish instantly.">
+    <meta name="description" content="Build your professional website in minutes. Click, pick, and publish. No coding needed.">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -110,10 +110,7 @@
             transition: all 0.2s;
         }
 
-        .sidebar-links a:hover {
-            color: white;
-            background: #334155;
-        }
+        .sidebar-links a:hover { color: white; background: #334155; }
 
         .section-label {
             font-size: 0.7rem;
@@ -123,30 +120,30 @@
             margin: 16px 0 8px;
         }
 
-        .section-label:first-of-type {
-            margin-top: 0;
-        }
+        .section-label:first-of-type { margin-top: 0; }
 
-        .block-item {
+        .category-btn {
+            width: 100%;
             background: #334155;
             border: 1px solid #475569;
             border-radius: 8px;
             padding: 10px 12px;
             margin-bottom: 6px;
-            cursor: grab;
+            cursor: pointer;
             color: #e2e8f0;
             font-size: 0.85rem;
             display: flex;
             align-items: center;
             gap: 8px;
             transition: all 0.2s;
-            user-select: none;
+            font-family: inherit;
+            text-align: left;
         }
 
-        .block-item:hover { background: #475569; border-color: #6366f1; }
-        .block-item:active { cursor: grabbing; opacity: 0.7; }
+        .category-btn:hover { background: #475569; border-color: #6366f1; }
+        .category-btn.active { background: #6366f1; border-color: #6366f1; color: white; }
 
-        .block-icon {
+        .cat-icon {
             width: 28px;
             height: 28px;
             background: rgba(99,102,241,0.2);
@@ -173,12 +170,13 @@
             max-width: 850px;
             background: white;
             border-radius: 4px;
-            min-height: 700px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            padding-bottom: 40px;
         }
 
         .builder-canvas {
             min-height: 700px;
+            padding-bottom: 20px;
         }
 
         .builder-block {
@@ -194,11 +192,6 @@
             border-color: #6366f1 !important;
             outline: 2px solid #6366f1;
             outline-offset: -2px;
-        }
-
-        .builder-block.drag-over {
-            border-color: #10b981 !important;
-            background: rgba(16,185,129,0.03);
         }
 
         .block-toolbar {
@@ -248,20 +241,97 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .empty-canvas .big-icon {
-            font-size: 4rem;
-            margin-bottom: 12px;
+        .empty-canvas .big-icon { font-size: 4rem; margin-bottom: 12px; }
+        .empty-canvas h3 { color: #64748b; margin-bottom: 8px; }
+        .empty-canvas p { color: #94a3b8; font-size: 0.9rem; }
+
+        /* Design Picker Modal */
+        .picker-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        .empty-canvas h3 {
-            color: #64748b;
-            margin-bottom: 8px;
+        .picker-overlay.active { display: flex; }
+
+        .picker-modal {
+            background: #1e293b;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 70vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
 
-        .empty-canvas p {
+        .picker-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+        }
+
+        .picker-header h3 { font-size: 1rem; }
+
+        .picker-close {
+            background: none;
+            border: none;
             color: #94a3b8;
-            font-size: 0.9rem;
+            font-size: 1.3rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
         }
+
+        .picker-close:hover { background: #334155; color: white; }
+
+        .picker-body {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 55vh;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .design-card {
+            background: #334155;
+            border: 2px solid #475569;
+            border-radius: 10px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            color: #e2e8f0;
+        }
+
+        .design-card:hover {
+            border-color: #6366f1;
+            background: #475569;
+            transform: translateY(-2px);
+        }
+
+        .design-preview {
+            height: 80px;
+            background: rgba(99,102,241,0.15);
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .design-card h4 { font-size: 0.85rem; margin-bottom: 4px; }
+        .design-card p { font-size: 0.7rem; color: #94a3b8; }
 
         .builder-toast {
             position: fixed;
@@ -284,6 +354,10 @@
         @keyframes slideIn {
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 600px) {
+            .picker-body { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -310,55 +384,52 @@
                 <a href="/web/index.html">Home</a>
             </div>
 
-            <div class="section-label">Layout</div>
-            <div class="block-item" draggable="true" data-type="hero" ondragstart="Builder.dragStart(event)">
-                <div class="block-icon">H</div> Hero Section
-            </div>
-            <div class="block-item" draggable="true" data-type="features" ondragstart="Builder.dragStart(event)">
-                <div class="block-icon">F</div> Features Grid
-            </div>
+            <div class="section-label">Header</div>
+            <button class="category-btn" onclick="Builder.openPicker('header')">
+                <div class="cat-icon">H</div> Add Header
+            </button>
 
             <div class="section-label">Content</div>
-            <div class="block-item" draggable="true" data-type="heading" ondragstart="Builder.dragStart(event)">
-                <div class="block-icon">T</div> Heading
-            </div>
-            <div class="block-item" draggable="true" data-type="text" ondragstart="Builder.dragStart(event)">
-                <div class="block-icon">P</div> Text Block
-            </div>
-            <div class="block-item" draggable="true" data-type="image" ondragstart="Builder.dragStart(event)">
-                <div class="block-icon">I</div> Image
-            </div>
-            <div class="block-item" draggable="true" data-type="button" ondragstart="Builder.dragStart(event)">
-                <div class="block-icon">B</div> Button
-            </div>
+            <button class="category-btn" onclick="Builder.openPicker('features')">
+                <div class="cat-icon">F</div> Add Features
+            </button>
+            <button class="category-btn" onclick="Builder.openPicker('about')">
+                <div class="cat-icon">A</div> Add About Section
+            </button>
+            <button class="category-btn" onclick="Builder.openPicker('text')">
+                <div class="cat-icon">T</div> Add Text Block
+            </button>
 
             <div class="section-label">Business</div>
-            <div class="block-item" draggable="true" data-type="contact" ondragstart="Builder.dragStart(event)">
-                <div class="block-icon">C</div> Contact Form
-            </div>
-            <div class="block-item" draggable="true" data-type="pricing" ondragstart="Builder.dragStart(event)">
-                <div class="block-icon">$</div> Pricing Table
-            </div>
-            <div class="block-item" draggable="true" data-type="testimonials" ondragstart="Builder.dragStart(event)">
-                <div class="block-icon">R</div> Testimonials
-            </div>
+            <button class="category-btn" onclick="Builder.openPicker('contact')">
+                <div class="cat-icon">C</div> Add Contact Form
+            </button>
+            <button class="category-btn" onclick="Builder.openPicker('pricing')">
+                <div class="cat-icon">$</div> Add Pricing Table
+            </button>
+            <button class="category-btn" onclick="Builder.openPicker('testimonials')">
+                <div class="cat-icon">R</div> Add Testimonials
+            </button>
 
             <div class="section-label">Media</div>
-            <div class="block-item" draggable="true" data-type="youtube" ondragstart="Builder.dragStart(event)">
-                <div class="block-icon">Y</div> YouTube Video
-            </div>
-            <div class="block-item" draggable="true" data-type="social" ondragstart="Builder.dragStart(event)">
-                <div class="block-icon">S</div> Social Links
-            </div>
+            <button class="category-btn" onclick="Builder.openPicker('gallery')">
+                <div class="cat-icon">G</div> Add Image Gallery
+            </button>
+            <button class="category-btn" onclick="Builder.openPicker('youtube')">
+                <div class="cat-icon">Y</div> Add YouTube Video
+            </button>
+            <button class="category-btn" onclick="Builder.openPicker('social')">
+                <div class="cat-icon">S</div> Add Social Links
+            </button>
         </div>
 
-        <div class="builder-canvas-area" ondragover="event.preventDefault()" ondrop="Builder.drop(event)">
+        <div class="builder-canvas-area">
             <div class="builder-canvas-wrapper">
                 <div class="builder-canvas" id="builder-canvas">
                     <div class="empty-canvas" id="empty-state">
                         <div class="big-icon">+</div>
                         <h3>Start Building Your Website</h3>
-                        <p>Drag blocks from the left panel here</p>
+                        <p>Click any section from the left panel to add it here</p>
                     </div>
                 </div>
             </div>
@@ -366,91 +437,156 @@
 
     </div>
 
+    <!-- Design Picker Modal -->
+    <div class="picker-overlay" id="picker-overlay">
+        <div class="picker-modal">
+            <div class="picker-header">
+                <h3 id="picker-title">Choose a Design</h3>
+                <button class="picker-close" onclick="Builder.closePicker()">&times;</button>
+            </div>
+            <div class="picker-body" id="picker-body"></div>
+        </div>
+    </div>
+
     <div class="builder-toast" id="builder-toast"></div>
 
     <script>
         const Builder = {
             selectedBlock: null,
-            blocks: {},
             canvas: null,
             emptyState: null,
             siteNameInput: null,
+            currentCategory: null,
 
             init() {
                 this.canvas = document.getElementById('builder-canvas');
                 this.emptyState = document.getElementById('empty-state');
                 this.siteNameInput = document.getElementById('site-name');
                 
-                this.defineBlocks();
-                
                 const templateData = JSON.parse(localStorage.getItem('wb_selected_template'));
-
                 if (templateData && templateData.blocks && templateData.blocks.length > 0) {
                     if (this.emptyState) this.emptyState.style.display = 'none';
-                    
                     templateData.blocks.forEach(blockType => {
-                        if (this.blocks[blockType]) {
-                            this.addBlock(blockType);
-                        }
+                        const design = this.getDesignByType(blockType);
+                        if (design) this.addBlock(design.html, design.type);
                     });
-                    
                     if (this.siteNameInput && templateData.name) {
                         this.siteNameInput.value = templateData.name.replace(/\s+/g, '-').toLowerCase();
                     }
-                    
                     localStorage.removeItem('wb_selected_template');
                     this.showToast('Template loaded. Customize it your way.');
                 } else {
                     this.loadSite();
                 }
-                
                 this.setupCanvasClick();
+                this.setupPickerClose();
             },
 
-            defineBlocks() {
-                this.blocks = {
-                    hero: `<div style="text-align:center;padding:60px 20px;background:#f8fafc;font-family:'Inter',sans-serif;">
-                        <h1 style="font-size:2rem;font-weight:800;color:#1e293b;margin-bottom:12px;">Welcome to My Business</h1>
-                        <p style="font-size:1.1rem;color:#64748b;margin-bottom:20px;">We provide the best services for our customers.</p>
-                        <a href="#" style="display:inline-block;padding:14px 30px;background:#6366f1;color:white;border-radius:8px;font-weight:600;text-decoration:none;">Get Started</a>
-                    </div>`,
-                    features: `<div style="padding:40px 20px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;font-family:'Inter',sans-serif;">
-                        <div style="text-align:center;padding:20px;background:#f8fafc;border-radius:10px;"><h4 style="margin-bottom:4px;">Fast</h4><p style="color:#64748b;font-size:0.85rem;">Quick delivery</p></div>
-                        <div style="text-align:center;padding:20px;background:#f8fafc;border-radius:10px;"><h4 style="margin-bottom:4px;">Quality</h4><p style="color:#64748b;font-size:0.85rem;">Best service</p></div>
-                        <div style="text-align:center;padding:20px;background:#f8fafc;border-radius:10px;"><h4 style="margin-bottom:4px;">Support</h4><p style="color:#64748b;font-size:0.85rem;">24/7 help</p></div>
-                    </div>`,
-                    heading: `<div style="padding:20px;text-align:center;"><h2 style="font-size:1.8rem;font-weight:700;color:#1e293b;">Section Heading</h2></div>`,
-                    text: `<div style="padding:15px 20px;"><p style="color:#64748b;line-height:1.7;">Edit this text to describe your business, services, or anything you want to share with your customers.</p></div>`,
-                    image: `<div style="padding:20px;text-align:center;background:#f8fafc;border:2px dashed #cbd5e1;border-radius:12px;cursor:pointer;" onclick="Builder.openImagePicker(this)"><div style="font-size:3rem;">+</div><p style="color:#64748b;">Click to add image</p></div>`,
-                    button: `<div style="text-align:center;padding:20px;"><a href="#" style="display:inline-block;padding:14px 30px;background:#6366f1;color:white;border-radius:8px;font-weight:600;text-decoration:none;">Click Here</a></div>`,
-                    contact: `<div style="padding:40px 20px;max-width:450px;margin:0 auto;font-family:'Inter',sans-serif;"><h2 style="text-align:center;margin-bottom:20px;">Contact Us</h2><form onsubmit="event.preventDefault();alert('Message sent!');" style="display:flex;flex-direction:column;gap:10px;"><input placeholder="Name" style="padding:10px;border:1px solid #e2e8f0;border-radius:6px;"><input placeholder="Email" style="padding:10px;border:1px solid #e2e8f0;border-radius:6px;"><textarea placeholder="Message" rows="3" style="padding:10px;border:1px solid #e2e8f0;border-radius:6px;"></textarea><button type="submit" style="padding:12px;background:#6366f1;color:white;border:none;border-radius:6px;cursor:pointer;">Send</button></form></div>`,
-                    pricing: `<div style="padding:30px 20px;font-family:'Inter',sans-serif;"><h2 style="text-align:center;margin-bottom:20px;">Our Pricing</h2><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:700px;margin:0 auto;"><div style="text-align:center;padding:20px;border:1px solid #e2e8f0;border-radius:10px;"><h4>Basic</h4><p style="font-size:1.5rem;font-weight:700;color:#6366f1;">Br 500</p></div><div style="text-align:center;padding:20px;border:2px solid #6366f1;border-radius:10px;background:#eef2ff;"><h4>Pro</h4><p style="font-size:1.5rem;font-weight:700;color:#6366f1;">Br 1,500</p></div><div style="text-align:center;padding:20px;border:1px solid #e2e8f0;border-radius:10px;"><h4>Enterprise</h4><p style="font-size:1.5rem;font-weight:700;color:#6366f1;">Custom</p></div></div></div>`,
-                    testimonials: `<div style="padding:30px 20px;background:#f8fafc;font-family:'Inter',sans-serif;"><h2 style="text-align:center;margin-bottom:20px;">Testimonials</h2><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;"><div style="background:white;padding:16px;border-radius:10px;"><p style="color:#64748b;font-size:0.85rem;">"Amazing service!"</p><strong style="font-size:0.8rem;">Abebe K.</strong></div><div style="background:white;padding:16px;border-radius:10px;"><p style="color:#64748b;font-size:0.85rem;">"Best in Ethiopia!"</p><strong style="font-size:0.8rem;">Tigist M.</strong></div><div style="background:white;padding:16px;border-radius:10px;"><p style="color:#64748b;font-size:0.85rem;">"Professional work."</p><strong style="font-size:0.8rem;">Dawit G.</strong></div></div></div>`,
-                    youtube: `<div style="padding:20px;max-width:700px;margin:0 auto;"><div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen></iframe></div></div>`,
-                    social: `<div style="padding:20px;text-align:center;display:flex;justify-content:center;gap:16px;flex-wrap:wrap;"><a href="https://facebook.com" target="_blank" style="width:44px;height:44px;background:#1877F2;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-weight:700;font-size:0.8rem;">FB</a><a href="https://instagram.com" target="_blank" style="width:44px;height:44px;background:#E4405F;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-weight:700;font-size:0.8rem;">IG</a><a href="https://t.me" target="_blank" style="width:44px;height:44px;background:#26A5E4;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-weight:700;font-size:0.8rem;">TG</a></div>`
+            getDesignByType(type) {
+                const designs = this.getAllDesigns();
+                for (const category of Object.values(designs)) {
+                    for (const design of category) {
+                        if (design.type === type) return design;
+                    }
+                }
+                return null;
+            },
+
+            getAllDesigns() {
+                return {
+                    header: [
+                        { type: 'hero', name: 'Simple Hero', desc: 'Heading, text, and button', icon: 'H1', html: `<div style="text-align:center;padding:60px 20px;background:#f8fafc;font-family:'Inter',sans-serif;"><h1 style="font-size:2rem;font-weight:800;color:#1e293b;margin-bottom:12px;">Welcome to My Business</h1><p style="font-size:1.1rem;color:#64748b;margin-bottom:20px;">We provide the best services for our customers.</p><a href="#" style="display:inline-block;padding:14px 30px;background:#6366f1;color:white;border-radius:8px;font-weight:600;text-decoration:none;">Get Started</a></div>` },
+                        { type: 'hero', name: 'Hero with Image', desc: 'Text on left, image on right', icon: 'H2', html: `<div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;padding:50px 20px;align-items:center;font-family:'Inter',sans-serif;"><div><h1 style="font-size:2rem;font-weight:800;color:#1e293b;margin-bottom:12px;">Grow Your Business</h1><p style="font-size:1rem;color:#64748b;margin-bottom:16px;">Professional solutions for Ethiopian businesses.</p><a href="#" style="display:inline-block;padding:12px 28px;background:#6366f1;color:white;border-radius:8px;font-weight:600;text-decoration:none;">Learn More</a></div><div style="background:#e2e8f0;border-radius:12px;height:200px;display:flex;align-items:center;justify-content:center;color:#94a3b8;">Image Here</div></div>` },
+                        { type: 'hero', name: 'Centered CTA', desc: 'Full width call to action', icon: 'H3', html: `<div style="text-align:center;padding:70px 20px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-family:'Inter',sans-serif;"><h1 style="font-size:2.2rem;font-weight:800;margin-bottom:12px;">Ready to Start?</h1><p style="font-size:1rem;margin-bottom:20px;opacity:0.9;">Join hundreds of Ethiopian businesses online.</p><a href="#" style="display:inline-block;padding:14px 30px;background:white;color:#6366f1;border-radius:8px;font-weight:600;text-decoration:none;">Get Started Free</a></div>` }
+                    ],
+                    features: [
+                        { type: 'features', name: '3 Column Features', desc: 'Three feature cards in a row', icon: 'F1', html: `<div style="padding:40px 20px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;font-family:'Inter',sans-serif;"><div style="text-align:center;padding:20px;background:#f8fafc;border-radius:10px;"><div style="font-size:2rem;margin-bottom:8px;">🚀</div><h4>Fast</h4><p style="color:#64748b;font-size:0.85rem;">Quick delivery</p></div><div style="text-align:center;padding:20px;background:#f8fafc;border-radius:10px;"><div style="font-size:2rem;margin-bottom:8px;">💎</div><h4>Quality</h4><p style="color:#64748b;font-size:0.85rem;">Best service</p></div><div style="text-align:center;padding:20px;background:#f8fafc;border-radius:10px;"><div style="font-size:2rem;margin-bottom:8px;">🤝</div><h4>Support</h4><p style="color:#64748b;font-size:0.85rem;">24/7 help</p></div></div>` },
+                        { type: 'features', name: '2 Column Features', desc: 'Two wider feature cards', icon: 'F2', html: `<div style="padding:40px 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:16px;font-family:'Inter',sans-serif;"><div style="padding:24px;background:#f8fafc;border-radius:10px;display:flex;gap:16px;align-items:center;"><div style="font-size:2rem;">🚀</div><div><h4>Fast Service</h4><p style="color:#64748b;font-size:0.85rem;">Get your website delivered quickly.</p></div></div><div style="padding:24px;background:#f8fafc;border-radius:10px;display:flex;gap:16px;align-items:center;"><div style="font-size:2rem;">💎</div><div><h4>Premium Quality</h4><p style="color:#64748b;font-size:0.85rem;">Professional design that stands out.</p></div></div></div>` }
+                    ],
+                    about: [
+                        { type: 'about', name: 'About with Image', desc: 'Text and image side by side', icon: 'A1', html: `<div style="padding:40px 20px;display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center;font-family:'Inter',sans-serif;"><div><h2 style="font-size:1.8rem;font-weight:700;margin-bottom:12px;">About Us</h2><p style="color:#64748b;line-height:1.7;">We are dedicated to providing the best services to our Ethiopian customers. Our team works hard to deliver quality results.</p></div><div style="background:#e2e8f0;border-radius:12px;height:250px;display:flex;align-items:center;justify-content:center;color:#94a3b8;">Image Here</div></div>` },
+                        { type: 'about', name: 'Simple About', desc: 'Text only about section', icon: 'A2', html: `<div style="padding:40px 20px;text-align:center;max-width:600px;margin:0 auto;font-family:'Inter',sans-serif;"><h2 style="font-size:1.8rem;font-weight:700;margin-bottom:12px;">About Us</h2><p style="color:#64748b;line-height:1.7;">We are dedicated to providing the best services to our Ethiopian customers. Our team works hard to deliver quality results every single day.</p></div>` }
+                    ],
+                    text: [
+                        { type: 'text', name: 'Text Block', desc: 'Simple paragraph text', icon: 'T1', html: `<div style="padding:15px 20px;font-family:'Inter',sans-serif;"><p style="color:#64748b;line-height:1.7;">Edit this text to describe your business, services, or anything you want to share with your customers. Click the Edit button above to change this text.</p></div>` },
+                        { type: 'text', name: 'Heading + Text', desc: 'Title with paragraph', icon: 'T2', html: `<div style="padding:20px;font-family:'Inter',sans-serif;"><h2 style="font-size:1.8rem;font-weight:700;color:#1e293b;margin-bottom:10px;">Section Heading</h2><p style="color:#64748b;line-height:1.7;">Edit this text to describe your business. Click Edit to change the heading and this paragraph.</p></div>` },
+                        { type: 'text', name: 'Two Text Columns', desc: 'Text split into two columns', icon: 'T3', html: `<div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px;font-family:'Inter',sans-serif;"><div><p style="color:#64748b;line-height:1.7;">First column text. Edit this to share your story or describe your services in detail.</p></div><div><p style="color:#64748b;line-height:1.7;">Second column text. Use this space to highlight additional information about your business.</p></div></div>` }
+                    ],
+                    contact: [
+                        { type: 'contact', name: 'Simple Form', desc: 'Name, email, message fields', icon: 'C1', html: `<div style="padding:40px 20px;max-width:450px;margin:0 auto;font-family:'Inter',sans-serif;"><h2 style="text-align:center;margin-bottom:20px;">Contact Us</h2><form onsubmit="event.preventDefault();alert('Message sent!');" style="display:flex;flex-direction:column;gap:10px;"><input placeholder="Name" style="padding:10px;border:1px solid #e2e8f0;border-radius:6px;"><input placeholder="Email" style="padding:10px;border:1px solid #e2e8f0;border-radius:6px;"><textarea placeholder="Message" rows="3" style="padding:10px;border:1px solid #e2e8f0;border-radius:6px;"></textarea><button type="submit" style="padding:12px;background:#6366f1;color:white;border:none;border-radius:6px;cursor:pointer;">Send</button></form></div>` },
+                        { type: 'contact', name: 'Contact with Info', desc: 'Form with phone and email', icon: 'C2', html: `<div style="padding:40px 20px;display:grid;grid-template-columns:1fr 1fr;gap:30px;font-family:'Inter',sans-serif;"><div><h2 style="margin-bottom:16px;">Get in Touch</h2><p style="color:#64748b;margin-bottom:12px;">📞 +251 911 573 334</p><p style="color:#64748b;">📧 agoodperception@gmail.com</p></div><form onsubmit="event.preventDefault();alert('Message sent!');" style="display:flex;flex-direction:column;gap:10px;"><input placeholder="Name" style="padding:10px;border:1px solid #e2e8f0;border-radius:6px;"><input placeholder="Email" style="padding:10px;border:1px solid #e2e8f0;border-radius:6px;"><textarea placeholder="Message" rows="3" style="padding:10px;border:1px solid #e2e8f0;border-radius:6px;"></textarea><button type="submit" style="padding:12px;background:#6366f1;color:white;border:none;border-radius:6px;cursor:pointer;">Send</button></form></div>` }
+                    ],
+                    pricing: [
+                        { type: 'pricing', name: '3 Plans', desc: 'Basic, Pro, Enterprise', icon: 'P1', html: `<div style="padding:30px 20px;font-family:'Inter',sans-serif;"><h2 style="text-align:center;margin-bottom:20px;">Our Pricing</h2><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:700px;margin:0 auto;"><div style="text-align:center;padding:20px;border:1px solid #e2e8f0;border-radius:10px;"><h4>Basic</h4><p style="font-size:1.5rem;font-weight:700;color:#6366f1;">Br 500</p></div><div style="text-align:center;padding:20px;border:2px solid #6366f1;border-radius:10px;background:#eef2ff;"><h4>Pro</h4><p style="font-size:1.5rem;font-weight:700;color:#6366f1;">Br 1,500</p></div><div style="text-align:center;padding:20px;border:1px solid #e2e8f0;border-radius:10px;"><h4>Enterprise</h4><p style="font-size:1.5rem;font-weight:700;color:#6366f1;">Custom</p></div></div></div>` }
+                    ],
+                    testimonials: [
+                        { type: 'testimonials', name: '3 Reviews', desc: 'Three customer testimonials', icon: 'R1', html: `<div style="padding:30px 20px;background:#f8fafc;font-family:'Inter',sans-serif;"><h2 style="text-align:center;margin-bottom:20px;">Testimonials</h2><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;"><div style="background:white;padding:16px;border-radius:10px;"><p style="color:#64748b;font-size:0.85rem;">"Amazing service!"</p><strong>Abebe K.</strong></div><div style="background:white;padding:16px;border-radius:10px;"><p style="color:#64748b;font-size:0.85rem;">"Best in Ethiopia!"</p><strong>Tigist M.</strong></div><div style="background:white;padding:16px;border-radius:10px;"><p style="color:#64748b;font-size:0.85rem;">"Professional work."</p><strong>Dawit G.</strong></div></div></div>` }
+                    ],
+                    gallery: [
+                        { type: 'gallery', name: '3 Column Gallery', desc: 'Three images per row', icon: 'G1', html: `<div style="padding:20px;font-family:'Inter',sans-serif;"><h2 style="text-align:center;margin-bottom:16px;">Gallery</h2><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;"><div style="aspect-ratio:1;background:#d4c5b9;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:2rem;">📸</div><div style="aspect-ratio:1;background:#b8c5b0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:2rem;">📸</div><div style="aspect-ratio:1;background:#c4b5c4;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:2rem;">📸</div></div></div>` }
+                    ],
+                    youtube: [
+                        { type: 'youtube', name: 'Video Embed', desc: 'Responsive YouTube video', icon: 'Y1', html: `<div style="padding:20px;max-width:700px;margin:0 auto;font-family:'Inter',sans-serif;"><h2 style="text-align:center;margin-bottom:16px;">Watch Our Video</h2><div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;"><iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none;" allowfullscreen></iframe></div></div>` }
+                    ],
+                    social: [
+                        { type: 'social', name: 'Social Links', desc: 'Facebook, Instagram, Telegram', icon: 'S1', html: `<div style="padding:20px;text-align:center;font-family:'Inter',sans-serif;"><h2 style="text-align:center;margin-bottom:16px;">Follow Us</h2><div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;"><a href="https://facebook.com" target="_blank" style="width:44px;height:44px;background:#1877F2;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-weight:700;font-size:0.8rem;">FB</a><a href="https://instagram.com" target="_blank" style="width:44px;height:44px;background:#E4405F;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-weight:700;font-size:0.8rem;">IG</a><a href="https://t.me" target="_blank" style="width:44px;height:44px;background:#26A5E4;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-weight:700;font-size:0.8rem;">TG</a></div></div>` }
+                    ]
                 };
             },
 
-            dragStart(e) {
-                e.dataTransfer.setData('text/plain', e.target.closest('.block-item').dataset.type);
+            openPicker(category) {
+                this.currentCategory = category;
+                const designs = this.getAllDesigns()[category] || [];
+                const title = document.getElementById('picker-title');
+                const body = document.getElementById('picker-body');
+                
+                const categoryNames = {
+                    header: 'Header Designs', features: 'Features Designs', about: 'About Section Designs',
+                    text: 'Text Block Designs', contact: 'Contact Form Designs', pricing: 'Pricing Table Designs',
+                    testimonials: 'Testimonial Designs', gallery: 'Gallery Designs', youtube: 'YouTube Video',
+                    social: 'Social Links Designs'
+                };
+                
+                title.textContent = categoryNames[category] || 'Choose a Design';
+                
+                body.innerHTML = designs.map(d => `
+                    <div class="design-card" onclick="Builder.selectDesign('${d.type}', '${category}')">
+                        <div class="design-preview">${d.icon}</div>
+                        <h4>${d.name}</h4>
+                        <p>${d.desc}</p>
+                    </div>
+                `).join('');
+                
+                document.getElementById('picker-overlay').classList.add('active');
             },
 
-            drop(e) {
-                e.preventDefault();
-                const blockType = e.dataTransfer.getData('text/plain');
-                if (blockType && this.blocks[blockType]) {
-                    this.addBlock(blockType);
+            closePicker() {
+                document.getElementById('picker-overlay').classList.remove('active');
+                this.currentCategory = null;
+            },
+
+            setupPickerClose() {
+                document.getElementById('picker-overlay').addEventListener('click', function(e) {
+                    if (e.target === this) Builder.closePicker();
+                });
+            },
+
+            selectDesign(type, category) {
+                const designs = this.getAllDesigns()[category] || [];
+                const design = designs.find(d => d.type === type);
+                if (design) {
+                    this.addBlock(design.html, type);
                 }
+                this.closePicker();
             },
 
-            addBlock(type) {
+            addBlock(html, type) {
                 if (this.emptyState) this.emptyState.style.display = 'none';
                 
                 const wrapper = document.createElement('div');
                 wrapper.className = 'builder-block';
                 wrapper.dataset.type = type;
-                wrapper.draggable = true;
-                wrapper.innerHTML = this.blocks[type];
+                wrapper.innerHTML = html;
                 
                 const toolbar = document.createElement('div');
                 toolbar.className = 'block-toolbar';
@@ -466,42 +602,10 @@
                     e.stopPropagation();
                     Builder.selectBlock(this);
                 });
-
-                wrapper.addEventListener('dragstart', function(e) {
-                    e.dataTransfer.setData('text/plain', 'reorder');
-                    e.dataTransfer.setData('block-index', Array.from(Builder.canvas.children).indexOf(this));
-                    this.style.opacity = '0.5';
-                });
-
-                wrapper.addEventListener('dragend', function() {
-                    this.style.opacity = '1';
-                });
-
-                wrapper.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    this.classList.add('drag-over');
-                });
-
-                wrapper.addEventListener('dragleave', function() {
-                    this.classList.remove('drag-over');
-                });
-
-                wrapper.addEventListener('drop', function(e) {
-                    e.stopPropagation();
-                    this.classList.remove('drag-over');
-                    const fromIndex = parseInt(e.dataTransfer.getData('block-index'));
-                    const blocks = Array.from(Builder.canvas.children);
-                    const fromBlock = blocks[fromIndex];
-                    if (fromBlock && fromBlock !== this) {
-                        Builder.canvas.insertBefore(fromBlock, this.nextSibling === fromBlock ? this : this);
-                        Builder.showToast('Block moved');
-                    }
-                });
                 
                 this.canvas.appendChild(wrapper);
                 this.selectBlock(wrapper);
-                this.showToast('Block added. Click Edit to change text.');
+                this.showToast('Section added. Click Edit to change text.');
             },
 
             selectBlock(block) {
@@ -511,7 +615,7 @@
             },
 
             deleteBlock(block) {
-                if (confirm('Remove this block?')) {
+                if (confirm('Remove this section?')) {
                     block.style.opacity = '0';
                     block.style.transform = 'scale(0.95)';
                     block.style.transition = 'all 0.3s';
@@ -521,7 +625,7 @@
                             if (this.emptyState) this.emptyState.style.display = 'flex';
                         }
                     }, 300);
-                    this.showToast('Block removed');
+                    this.showToast('Section removed');
                 }
             },
 
@@ -532,10 +636,10 @@
                 
                 if (direction === 'up' && currentIndex > 0) {
                     parent.insertBefore(block, blocks[currentIndex - 1]);
-                    this.showToast('Block moved up');
+                    this.showToast('Section moved up');
                 } else if (direction === 'down' && currentIndex < blocks.length - 1) {
                     parent.insertBefore(blocks[currentIndex + 1], block);
-                    this.showToast('Block moved down');
+                    this.showToast('Section moved down');
                 }
             },
 
@@ -544,13 +648,15 @@
                 
                 if (block.dataset.type === 'youtube') {
                     const iframe = block.querySelector('iframe');
-                    const newUrl = prompt('Enter YouTube video URL:', iframe?.src);
-                    if (newUrl && iframe) {
-                        let videoId = newUrl;
-                        if (newUrl.includes('v=')) videoId = newUrl.split('v=')[1].split('&')[0];
-                        else if (newUrl.includes('youtu.be/')) videoId = newUrl.split('youtu.be/')[1].split('?')[0];
-                        else if (newUrl.includes('embed/')) videoId = newUrl.split('embed/')[1].split('?')[0];
-                        iframe.src = 'https://www.youtube.com/embed/' + videoId;
+                    if (iframe) {
+                        const newUrl = prompt('Enter YouTube video URL:', iframe.src);
+                        if (newUrl) {
+                            let videoId = newUrl;
+                            if (newUrl.includes('v=')) videoId = newUrl.split('v=')[1].split('&')[0];
+                            else if (newUrl.includes('youtu.be/')) videoId = newUrl.split('youtu.be/')[1].split('?')[0];
+                            else if (newUrl.includes('embed/')) videoId = newUrl.split('embed/')[1].split('?')[0];
+                            iframe.src = 'https://www.youtube.com/embed/' + videoId;
+                        }
                     }
                     return;
                 }
@@ -559,20 +665,24 @@
                     const links = block.querySelectorAll('a');
                     const platforms = ['Facebook', 'Instagram', 'Telegram'];
                     links.forEach((link, index) => {
-                        const newUrl = prompt(platforms[index] + ' URL:', link.href);
-                        if (newUrl) link.href = newUrl;
+                        if (index < platforms.length) {
+                            const newUrl = prompt(platforms[index] + ' URL:', link.href);
+                            if (newUrl) link.href = newUrl;
+                        }
                     });
                     return;
                 }
                 
-                const editables = block.querySelectorAll('h1, h2, h3, h4, p, a');
+                const editables = block.querySelectorAll('h1, h2, h3, h4, p');
                 editables.forEach(el => {
                     el.contentEditable = 'true';
                     el.style.outline = '1px dashed #6366f1';
+                    el.style.cursor = 'text';
                     el.focus();
                     el.addEventListener('blur', function() {
                         this.contentEditable = 'false';
                         this.style.outline = 'none';
+                        this.style.cursor = 'default';
                     }, { once: true });
                 });
                 this.showToast('Click text to edit. Click away when done.');
@@ -585,19 +695,6 @@
                         Builder.selectedBlock = null;
                     }
                 });
-            },
-
-            openImagePicker(container) {
-                window.selectedImageContainer = container;
-                window.open('/web/image-picker.html', 'ImagePicker', 'width=800,height=600');
-            },
-
-            insertImage(url) {
-                if (window.selectedImageContainer) {
-                    window.selectedImageContainer.innerHTML = `<div style="padding:20px;text-align:center;"><img src="${url}" style="max-width:100%;border-radius:8px;" alt="Image"></div>`;
-                    window.selectedImageContainer = null;
-                    this.showToast('Image added');
-                }
             },
 
             save() {
