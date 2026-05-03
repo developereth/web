@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio - WebBuilder | Ethiopia</title>
+    <title>Portfolio - WebBuilder | Ethiopia 2026</title>
     <meta name="description" content="See our portfolio of professional websites, AI solutions, and web applications built for Ethiopian businesses.">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,6 +11,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        .page-hero { padding: 140px 0 50px; text-align: center; }
+        .portfolio-card { background: white; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); transition: all 0.3s; }
+        .portfolio-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+        .portfolio-preview { height: 180px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: 700; }
+        .portfolio-info { padding: 20px; }
+    </style>
 </head>
 <body>
 
@@ -37,109 +45,66 @@
         </div>
     </header>
 
-    <section class="section" style="padding-top:120px;">
+    <section class="page-hero">
         <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Our Work</span>
-                <h2 class="section-title">Featured Portfolio</h2>
-                <p class="section-subtitle">Projects we have delivered for Ethiopian businesses and beyond.</p>
-            </div>
+            <span class="section-tag">Our Work</span>
+            <h1 class="section-title">Featured Portfolio</h1>
+            <p class="section-subtitle">Projects delivered for Ethiopian businesses and beyond.</p>
         </div>
     </section>
 
     <section class="section-sm">
         <div class="container">
             <div class="grid-3">
-                <div class="card animate-on-scroll" style="overflow:hidden;padding:0;">
-                    <div style="height:200px;background:linear-gradient(135deg,#1e1b4b,#312e81);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">AI</div>
-                    <div style="padding:24px;">
+                <div class="portfolio-card">
+                    <div class="portfolio-preview" style="background:linear-gradient(135deg,#1e1b4b,#312e81);">AI</div>
+                    <div class="portfolio-info">
                         <span class="badge badge-primary">AI Solution</span>
                         <h3 style="margin-top:8px;">Habesha AI Assistant</h3>
-                        <p style="color:var(--text-secondary);font-size:0.9rem;margin:8px 0;">Ethiopian language AI chatbot for customer support. Handles Amharic and English.</p>
-                        <a href="#" class="btn btn-outline btn-sm">View Project</a>
+                        <p style="color:var(--text-secondary);font-size:0.9rem;">Ethiopian language AI chatbot for customer support.</p>
                     </div>
                 </div>
-
-                <div class="card animate-on-scroll" style="overflow:hidden;padding:0;">
-                    <div style="height:200px;background:linear-gradient(135deg,#0f766e,#14b8a6);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">EC</div>
-                    <div style="padding:24px;">
+                <div class="portfolio-card">
+                    <div class="portfolio-preview" style="background:linear-gradient(135deg,#0f766e,#14b8a6);">EC</div>
+                    <div class="portfolio-info">
                         <span class="badge badge-success">E-Commerce</span>
                         <h3 style="margin-top:8px;">Addis Market Hub</h3>
-                        <p style="color:var(--text-secondary);font-size:0.9rem;margin:8px 0;">Online marketplace connecting 500 plus local vendors with customers across Ethiopia.</p>
-                        <a href="#" class="btn btn-outline btn-sm">View Project</a>
+                        <p style="color:var(--text-secondary);font-size:0.9rem;">Online marketplace with 500+ local vendors.</p>
                     </div>
                 </div>
-
-                <div class="card animate-on-scroll" style="overflow:hidden;padding:0;">
-                    <div style="height:200px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">AN</div>
-                    <div style="padding:24px;">
+                <div class="portfolio-card">
+                    <div class="portfolio-preview" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">AN</div>
+                    <div class="portfolio-info">
                         <span class="badge badge-info">Analytics</span>
                         <h3 style="margin-top:8px;">DataCore Dashboard</h3>
-                        <p style="color:var(--text-secondary);font-size:0.9rem;margin:8px 0;">Real-time business intelligence platform with predictive analytics and reporting.</p>
-                        <a href="#" class="btn btn-outline btn-sm">View Project</a>
+                        <p style="color:var(--text-secondary);font-size:0.9rem;">Real-time business intelligence platform.</p>
                     </div>
                 </div>
-
-                <div class="card animate-on-scroll" style="overflow:hidden;padding:0;">
-                    <div style="height:200px;background:linear-gradient(135deg,#dc2626,#f97316);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">ED</div>
-                    <div style="padding:24px;">
+                <div class="portfolio-card">
+                    <div class="portfolio-preview" style="background:linear-gradient(135deg,#dc2626,#f97316);">ED</div>
+                    <div class="portfolio-info">
                         <span class="badge badge-warning">Education</span>
                         <h3 style="margin-top:8px;">Ethio Learn Platform</h3>
-                        <p style="color:var(--text-secondary);font-size:0.9rem;margin:8px 0;">Online learning platform with video courses, quizzes, and certification for Ethiopian students.</p>
-                        <a href="#" class="btn btn-outline btn-sm">View Project</a>
+                        <p style="color:var(--text-secondary);font-size:0.9rem;">Online learning with courses and certification.</p>
                     </div>
                 </div>
-
-                <div class="card animate-on-scroll" style="overflow:hidden;padding:0;">
-                    <div style="height:200px;background:linear-gradient(135deg,#3d3226,#6b5e51);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">RE</div>
-                    <div style="padding:24px;">
+                <div class="portfolio-card">
+                    <div class="portfolio-preview" style="background:linear-gradient(135deg,#3d3226,#6b5e51);">RE</div>
+                    <div class="portfolio-info">
                         <span class="badge badge-primary">Restaurant</span>
                         <h3 style="margin-top:8px;">Habesha Flavors</h3>
-                        <p style="color:var(--text-secondary);font-size:0.9rem;margin:8px 0;">Restaurant website with online menu, reservation system, and delivery ordering.</p>
-                        <a href="#" class="btn btn-outline btn-sm">View Project</a>
+                        <p style="color:var(--text-secondary);font-size:0.9rem;">Restaurant site with menu and reservations.</p>
                     </div>
                 </div>
-
-                <div class="card animate-on-scroll" style="overflow:hidden;padding:0;">
-                    <div style="height:200px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">CO</div>
-                    <div style="padding:24px;">
+                <div class="portfolio-card">
+                    <div class="portfolio-preview" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">CO</div>
+                    <div class="portfolio-info">
                         <span class="badge badge-info">Corporate</span>
                         <h3 style="margin-top:8px;">EthioTech Corporate</h3>
-                        <p style="color:var(--text-secondary);font-size:0.9rem;margin:8px 0;">Professional corporate website with investor relations, team pages, and blog.</p>
-                        <a href="#" class="btn btn-outline btn-sm">View Project</a>
+                        <p style="color:var(--text-secondary);font-size:0.9rem;">Professional corporate website with blog.</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <section class="section section-bg text-center">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Results</span>
-                <h2 class="section-title">What Our Clients Achieved</h2>
-            </div>
-            <div class="grid-3">
-                <div class="card">
-                    <div style="font-size:2.5rem;font-weight:800;color:var(--primary);">80%</div>
-                    <p style="color:var(--text-secondary);">Average reduction in response time with AI chatbots</p>
-                </div>
-                <div class="card">
-                    <div style="font-size:2.5rem;font-weight:800;color:var(--primary);">45%</div>
-                    <p style="color:var(--text-secondary);">Increase in online conversions after website redesign</p>
-                </div>
-                <div class="card">
-                    <div style="font-size:2.5rem;font-weight:800;color:var(--primary);">500+</div>
-                    <p style="color:var(--text-secondary);">Vendors connected through our marketplace platform</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section-sm text-center">
-        <div class="container">
-            <h3 style="font-size:1.5rem;margin-bottom:16px;">Want to be our next success story?</h3>
-            <a href="contact.html" class="btn btn-primary btn-lg">Start Your Project</a>
         </div>
     </section>
 
@@ -155,7 +120,6 @@
                     <ul>
                         <li><a href="services.html">Web Development</a></li>
                         <li><a href="services.html">AI Solutions</a></li>
-                        <li><a href="services.html">UI/UX Design</a></li>
                         <li><a href="builder.html">Website Builder</a></li>
                     </ul>
                 </div>
@@ -173,13 +137,11 @@
                     <ul>
                         <li><a href="contact.html">Help Center</a></li>
                         <li><a href="#">Documentation</a></li>
-                        <li><a href="#">API</a></li>
-                        <li><a href="#">Status</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 WebBuilder. All rights reserved. Made in Ethiopia.</p>
+                <p>&copy; 2026 WebBuilder. All rights reserved. Made in Ethiopia.</p>
             </div>
         </div>
     </footer>
