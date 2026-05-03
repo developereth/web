@@ -1,6 +1,6 @@
 /* ============================================================
    WebBuilder - Professional Platform Stylesheet
-   Version: 3.0 - Enhanced & Polished
+   Version: 4.0 - Premium Design System
    ============================================================ */
 
 /* CSS Reset */
@@ -829,6 +829,7 @@ ul, ol {
         gap: 14px;
         border-bottom: 1px solid var(--border);
         box-shadow: var(--shadow-md);
+        z-index: 999;
     }
 }
 
