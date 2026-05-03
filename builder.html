@@ -526,10 +526,16 @@
             },
 
             moveBlock(block, direction) {
-                const sibling = direction === 'up' ? block.previousElementSibling : block.nextElementSibling;
-                if (sibling && sibling.classList.contains('builder-block')) {
-                    direction === 'up' ? this.canvas.insertBefore(block, sibling) : this.canvas.insertBefore(sibling, block);
-                    this.showToast('Block moved');
+                const parent = this.canvas;
+                const blocks = Array.from(parent.children);
+                const currentIndex = blocks.indexOf(block);
+                
+                if (direction === 'up' && currentIndex > 0) {
+                    parent.insertBefore(block, blocks[currentIndex - 1]);
+                    this.showToast('Block moved up');
+                } else if (direction === 'down' && currentIndex < blocks.length - 1) {
+                    parent.insertBefore(blocks[currentIndex + 1], block);
+                    this.showToast('Block moved down');
                 }
             },
 
