@@ -14,7 +14,7 @@
     
     <style>
         body {
-            background: linear-gradient(135deg, #1e1b4b, #312e81);
+            background: linear-gradient(135deg, #1A1A2E, #16213E);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -24,18 +24,18 @@
         
         .success-card {
             background: white;
-            border-radius: var(--radius-2xl);
+            border-radius: 24px;
             padding: 48px 40px;
             max-width: 560px;
             width: 100%;
             text-align: center;
-            box-shadow: var(--shadow-2xl);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.2);
         }
         
         .success-icon {
             width: 80px;
             height: 80px;
-            background: var(--success-light);
+            background: #E6F9F4;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -47,19 +47,19 @@
         h1 {
             font-size: 2rem;
             font-weight: 800;
-            color: var(--text);
+            color: #1A1A2E;
             margin-bottom: 8px;
         }
         
         .subtitle {
-            color: var(--text-secondary);
+            color: #5A5A7A;
             font-size: 1.05rem;
             margin-bottom: 32px;
         }
         
         .url-box {
-            background: #f0fdf4;
-            border: 2px solid #bbf7d0;
+            background: #E6F9F4;
+            border: 2px solid #00B894;
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 24px;
@@ -68,16 +68,16 @@
         .url-label {
             font-size: 0.8rem;
             font-weight: 600;
-            color: #166534;
+            color: #007A5E;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 8px;
         }
         
         .url-link {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            color: var(--primary);
+            color: #6C5CE7;
             word-break: break-all;
             text-decoration: none;
         }
@@ -101,15 +101,41 @@
             margin-bottom: 24px;
         }
         
+        .publishing-status {
+            display: none;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+        }
+        
+        .publishing-status.loading {
+            display: block;
+            background: #FFF9F0;
+            color: #B88000;
+        }
+        
+        .publishing-status.success {
+            display: block;
+            background: #E6F9F4;
+            color: #007A5E;
+        }
+        
+        .publishing-status.error {
+            display: block;
+            background: #FFF0F0;
+            color: #C0392B;
+        }
+        
         .share-section {
             padding-top: 24px;
-            border-top: 1px solid var(--border);
+            border-top: 1px solid #E8E8F0;
         }
         
         .share-section h3 {
             font-size: 1rem;
             margin-bottom: 16px;
-            color: var(--text);
+            color: #1A1A2E;
         }
         
         .share-buttons {
@@ -147,7 +173,7 @@
         
         .next-steps {
             text-align: left;
-            background: var(--bg-secondary);
+            background: #F8F9FC;
             border-radius: 12px;
             padding: 24px;
             margin-top: 24px;
@@ -166,7 +192,7 @@
         .next-steps li {
             padding: 8px 0;
             font-size: 0.9rem;
-            color: var(--text-secondary);
+            color: #5A5A7A;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -174,7 +200,7 @@
         
         .next-steps li::before {
             content: '\2713';
-            color: var(--success);
+            color: #00B894;
             font-weight: 700;
         }
     </style>
@@ -188,10 +214,11 @@
         
         <div class="url-box">
             <div class="url-label">Your Website URL</div>
-            <a class="url-link" id="site-url" href="#" target="_blank">loading...</a>
+            <a class="url-link" id="site-url" href="#" target="_blank">Publishing your site...</a>
+            <div class="publishing-status loading" id="publish-status">Please wait while we publish your site...</div>
             <div class="url-actions">
                 <button class="btn btn-sm btn-outline" onclick="copyUrl()">Copy Link</button>
-                <a href="#" class="btn btn-sm btn-outline" id="visit-btn" target="_blank">Open Site</a>
+                <a href="#" class="btn btn-sm btn-primary" id="visit-btn" target="_blank">Open Site</a>
             </div>
         </div>
         
@@ -200,7 +227,7 @@
             <a href="dashboard.html" class="btn btn-outline">Dashboard</a>
         </div>
         
-        <div class="share-section">
+        <div class="share-section" id="share-section" style="display:none;">
             <h3>Share Your Website</h3>
             <div class="share-buttons">
                 <a href="#" class="share-btn share-fb" id="share-fb" target="_blank">FB</a>
@@ -224,34 +251,41 @@
     </div>
     
     <script>
+        const GITHUB_USER = 'developereth';
+        const WORKER_URL = 'https://webbuilder-api.YOUR-WORKER-NAME.workers.dev';
+        
         function getSiteName() {
             const params = new URLSearchParams(window.location.search);
             return params.get('site') || 'my-site';
         }
         
-        function getSiteUrl() {
-            return 'https://' + getSiteName() + '.webbuilder.pages.dev';
+        function getCleanName() {
+            return getSiteName().replace(/[^a-z0-9-]/g, '-').toLowerCase();
         }
         
-        function setupPage() {
-            const siteUrl = getSiteUrl();
-            
-            document.getElementById('site-url').textContent = siteUrl.replace('https://', '');
-            document.getElementById('site-url').href = siteUrl;
-            document.getElementById('visit-btn').href = siteUrl;
-            
+        function getSiteUrl() {
+            return `https://${GITHUB_USER}.github.io/webbuilder-sites/sites/${getCleanName()}/`;
+        }
+        
+        function setupShareLinks(siteUrl) {
             const encodedUrl = encodeURIComponent(siteUrl);
-            const message = encodeURIComponent('Check out my new website built with WebBuilder.');
+            const message = encodeURIComponent('Check out my new website built with WebBuilder!');
             
             document.getElementById('share-fb').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodedUrl;
             document.getElementById('share-tg').href = 'https://t.me/share/url?url=' + encodedUrl + '&text=' + message;
             document.getElementById('share-wa').href = 'https://wa.me/?text=' + message + '%20' + encodedUrl;
             document.getElementById('share-tw').href = 'https://twitter.com/intent/tweet?url=' + encodedUrl + '&text=' + message;
             document.getElementById('share-li').href = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodedUrl;
+            
+            document.getElementById('share-section').style.display = 'block';
         }
         
         function copyUrl() {
             const siteUrl = getSiteUrl();
+            if (siteUrl.includes('undefined')) {
+                alert('Site is still publishing. Please wait.');
+                return;
+            }
             navigator.clipboard.writeText(siteUrl).then(() => {
                 alert('URL copied to clipboard.');
             }).catch(() => {
@@ -259,7 +293,59 @@
             });
         }
         
-        setupPage();
+        async function publishSite() {
+            const siteName = getSiteName();
+            const cleanName = getCleanName();
+            const content = localStorage.getItem('wb_site_' + siteName);
+            
+            if (!content) {
+                document.getElementById('site-url').textContent = 'No site content found';
+                document.getElementById('publish-status').className = 'publishing-status error';
+                document.getElementById('publish-status').textContent = 'Please save your site first before publishing.';
+                return;
+            }
+            
+            const cleanHTML = content.replace(/<div class="block-toolbar"[^>]*>[\s\S]*?<\/div>/g, '');
+            
+            try {
+                const response = await fetch(`${WORKER_URL}/publish`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        siteName: siteName,
+                        html: cleanHTML
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('site-url').textContent = result.url;
+                    document.getElementById('site-url').href = result.url;
+                    document.getElementById('visit-btn').href = result.url;
+                    document.getElementById('publish-status').className = 'publishing-status success';
+                    document.getElementById('publish-status').textContent = 'Your site is live! It may take 30 seconds to appear.';
+                    setupShareLinks(result.url);
+                } else {
+                    document.getElementById('site-url').textContent = 'Publishing failed';
+                    document.getElementById('publish-status').className = 'publishing-status error';
+                    document.getElementById('publish-status').textContent = result.error || 'Unknown error. Please try again.';
+                }
+            } catch (error) {
+                console.error('Publish error:', error);
+                document.getElementById('site-url').textContent = 'Connection error';
+                document.getElementById('publish-status').className = 'publishing-status error';
+                document.getElementById('publish-status').textContent = 'Cannot connect to publishing server. Check your internet.';
+                
+                // Fallback: show preview URL
+                const fallbackUrl = getSiteUrl();
+                document.getElementById('site-url').textContent = fallbackUrl;
+                document.getElementById('site-url').href = '#';
+                document.getElementById('publish-status').textContent += ' The site may still publish. Check back in 1 minute.';
+            }
+        }
+        
+        publishSite();
     </script>
     
 </body>
