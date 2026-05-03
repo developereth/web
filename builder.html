@@ -159,10 +159,12 @@
         .builder-canvas-area {
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
             background: #0f172a;
             padding: 24px;
             display: flex;
             justify-content: center;
+            align-items: flex-start;
         }
 
         .builder-canvas-wrapper {
@@ -171,7 +173,7 @@
             background: white;
             border-radius: 4px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-            padding-bottom: 40px;
+            flex-shrink: 0;
         }
 
         .builder-canvas {
@@ -358,6 +360,7 @@
 
         @media (max-width: 600px) {
             .picker-body { grid-template-columns: 1fr; }
+            .builder-sidebar { width: 200px; }
         }
     </style>
 </head>
@@ -605,6 +608,12 @@
                 
                 this.canvas.appendChild(wrapper);
                 this.selectBlock(wrapper);
+                
+                const canvasArea = document.querySelector('.builder-canvas-area');
+                setTimeout(() => {
+                    canvasArea.scrollTop = canvasArea.scrollHeight;
+                }, 100);
+                
                 this.showToast('Section added. Click Edit to change text.');
             },
 
