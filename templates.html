@@ -1,0 +1,15 @@
+loadTemplate(templateId) {
+    const templateData = JSON.parse(localStorage.getItem('wb_selected_template'));
+    if (!templateData || templateData.id !== templateId) return;
+    
+    if (this.emptyState) this.emptyState.style.display = 'none';
+    
+    templateData.blocks.forEach(blockType => {
+        if (this.blocks[blockType]) {
+            this.addBlock(blockType);
+        }
+    });
+    
+    localStorage.removeItem('wb_selected_template');
+    this.showToast('Template loaded. Customize it your way.');
+}
