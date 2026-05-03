@@ -93,12 +93,38 @@
             flex-shrink: 0;
         }
 
+        .sidebar-links {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .sidebar-links a {
+            display: block;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.8rem;
+            padding: 6px 8px;
+            border-radius: 4px;
+            margin-bottom: 2px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-links a:hover {
+            color: white;
+            background: #334155;
+        }
+
         .section-label {
             font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #64748b;
             margin: 16px 0 8px;
+        }
+
+        .section-label:first-of-type {
+            margin-top: 0;
         }
 
         .block-item {
@@ -188,7 +214,7 @@
         .builder-block:hover .block-toolbar { display: flex; }
 
         .block-tool-btn {
-            width: 28px;
+            width: auto;
             height: 28px;
             border: none;
             border-radius: 4px;
@@ -202,11 +228,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 0 8px;
+            white-space: nowrap;
         }
 
-        .block-tool-btn:hover { transform: scale(1.1); }
+        .block-tool-btn:hover { transform: scale(1.05); }
         .block-tool-btn.delete:hover { background: #ef4444; color: white; }
         .block-tool-btn.edit:hover { background: #6366f1; color: white; }
+        .block-tool-btn.move:hover { background: #10b981; color: white; }
 
         .empty-canvas {
             display: flex;
@@ -227,6 +256,11 @@
         .empty-canvas h3 {
             color: #64748b;
             margin-bottom: 8px;
+        }
+
+        .empty-canvas p {
+            color: #94a3b8;
+            font-size: 0.9rem;
         }
 
         .builder-toast {
@@ -257,7 +291,7 @@
 
     <div class="builder-topbar">
         <div class="builder-topbar-left">
-            <a href="index.html" class="builder-logo">Web<span>Builder</span></a>
+            <a href="/web/index.html" class="builder-logo">Web<span>Builder</span></a>
             <input type="text" class="site-name-input" id="site-name" value="my-business" placeholder="Site name">
         </div>
         <div style="display:flex; gap:8px;">
@@ -270,6 +304,12 @@
     <div class="builder-main">
 
         <div class="builder-sidebar">
+            <div class="sidebar-links">
+                <a href="/web/templates.html">Templates</a>
+                <a href="/web/dashboard.html">My Sites</a>
+                <a href="/web/index.html">Home</a>
+            </div>
+
             <div class="section-label">Layout</div>
             <div class="block-item" draggable="true" data-type="hero" ondragstart="Builder.dragStart(event)">
                 <div class="block-icon">H</div> Hero Section
@@ -342,7 +382,14 @@
                 this.siteNameInput = document.getElementById('site-name');
                 
                 this.defineBlocks();
-                this.loadSite();
+                
+                const templateId = new URLSearchParams(window.location.search).get('template');
+                if (templateId) {
+                    this.loadTemplate(templateId);
+                } else {
+                    this.loadSite();
+                }
+                
                 this.setupCanvasClick();
             },
 
@@ -393,10 +440,10 @@
                 const toolbar = document.createElement('div');
                 toolbar.className = 'block-toolbar';
                 toolbar.innerHTML = `
-                    <button class="block-tool-btn edit" onclick="event.stopPropagation();Builder.editBlock(this.closest('.builder-block'))">E</button>
-                    <button class="block-tool-btn" onclick="event.stopPropagation();Builder.moveBlock(this.closest('.builder-block'),'up')">U</button>
-                    <button class="block-tool-btn" onclick="event.stopPropagation();Builder.moveBlock(this.closest('.builder-block'),'down')">D</button>
-                    <button class="block-tool-btn delete" onclick="event.stopPropagation();Builder.deleteBlock(this.closest('.builder-block'))">X</button>
+                    <button class="block-tool-btn edit" onclick="event.stopPropagation();Builder.editBlock(this.closest('.builder-block'))">Edit</button>
+                    <button class="block-tool-btn move" onclick="event.stopPropagation();Builder.moveBlock(this.closest('.builder-block'),'up')">Up</button>
+                    <button class="block-tool-btn move" onclick="event.stopPropagation();Builder.moveBlock(this.closest('.builder-block'),'down')">Down</button>
+                    <button class="block-tool-btn delete" onclick="event.stopPropagation();Builder.deleteBlock(this.closest('.builder-block'))">Delete</button>
                 `;
                 wrapper.appendChild(toolbar);
                 
@@ -407,7 +454,7 @@
                 
                 this.canvas.appendChild(wrapper);
                 this.selectBlock(wrapper);
-                this.showToast('Block added');
+                this.showToast('Block added. Click Edit to change text.');
             },
 
             selectBlock(block) {
@@ -457,8 +504,9 @@
                 
                 if (block.dataset.type === 'social') {
                     const links = block.querySelectorAll('a');
-                    links.forEach(link => {
-                        const newUrl = prompt('Enter URL:', link.href);
+                    const platforms = ['Facebook', 'Instagram', 'Telegram'];
+                    links.forEach((link, index) => {
+                        const newUrl = prompt(platforms[index] + ' URL:', link.href);
                         if (newUrl) link.href = newUrl;
                     });
                     return;
@@ -474,6 +522,7 @@
                         this.style.outline = 'none';
                     }, { once: true });
                 });
+                this.showToast('Click text to edit. Click away when done.');
             },
 
             setupCanvasClick() {
@@ -487,7 +536,7 @@
 
             openImagePicker(container) {
                 window.selectedImageContainer = container;
-                window.open('image-picker.html', 'ImagePicker', 'width=800,height=600');
+                window.open('/web/image-picker.html', 'ImagePicker', 'width=800,height=600');
             },
 
             insertImage(url) {
@@ -519,6 +568,26 @@
                 }
             },
 
+            loadTemplate(templateId) {
+                const templateData = JSON.parse(localStorage.getItem('wb_selected_template'));
+                if (templateData) {
+                    if (this.emptyState) this.emptyState.style.display = 'none';
+                    
+                    templateData.blocks.forEach(blockType => {
+                        if (this.blocks[blockType]) {
+                            this.addBlock(blockType);
+                        }
+                    });
+                    
+                    if (this.siteNameInput) {
+                        this.siteNameInput.value = templateData.name || 'my-site';
+                    }
+                    
+                    localStorage.removeItem('wb_selected_template');
+                    this.showToast('Template loaded. Customize it your way.');
+                }
+            },
+
             preview() {
                 this.save();
                 const siteName = this.siteNameInput?.value || 'my-site';
@@ -530,7 +599,7 @@
             publish() {
                 this.save();
                 const siteName = this.siteNameInput?.value || 'my-site';
-                window.location.href = 'publish.html?site=' + encodeURIComponent(siteName);
+                window.location.href = '/web/publish.html?site=' + encodeURIComponent(siteName);
             },
 
             showToast(message) {
