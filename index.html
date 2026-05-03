@@ -14,103 +14,231 @@
     
     <style>
         .hero {
-            padding: 140px 0 60px;
+            padding: 140px 0 80px;
+            display: flex;
+            align-items: center;
             min-height: auto;
+            background: radial-gradient(ellipse at 70% 30%, rgba(108, 92, 231, 0.06), transparent 50%),
+                        radial-gradient(ellipse at 30% 70%, rgba(0, 206, 201, 0.06), transparent 50%);
         }
-        .section {
-            padding: 60px 0;
+
+        .hero-stats {
+            display: flex;
+            gap: 36px;
+            margin-top: 36px;
+            flex-wrap: wrap;
         }
-        .section-bg {
-            background: var(--bg-secondary);
+
+        .hero-stat-item {
+            text-align: center;
         }
-        .feature-icon {
-            width: 56px;
-            height: 56px;
-            background: var(--primary-light);
-            border-radius: 14px;
+
+        .hero-stat-number {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-stat-label {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .hero-mockup {
+            background: linear-gradient(145deg, #1A1A2E, #16213E);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .hero-mockup-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .hero-mockup-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .hero-mockup-dot.red { background: #FF7675; }
+        .hero-mockup-dot.yellow { background: #FDCB6E; }
+        .hero-mockup-dot.green { background: #00B894; }
+
+        .hero-mockup-body {
+            background: #0F0F23;
+            border-radius: 12px;
+            padding: 20px;
+            color: #e2e8f0;
+            font-size: 0.82rem;
+        }
+
+        .hero-mockup-line {
+            background: rgba(255,255,255,0.06);
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .hero-mockup-line.active {
+            background: rgba(108, 92, 231, 0.25);
+            border-left: 3px solid var(--primary);
+            padding-left: 16px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .service-icon {
+            width: 68px;
+            height: 68px;
+            background: linear-gradient(135deg, var(--primary-light), #E8E4FF);
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 16px;
+            margin-bottom: 18px;
             color: var(--primary);
+            font-size: 1.8rem;
+            transition: all 0.3s;
         }
-        .feature-icon svg {
-            width: 26px;
-            height: 26px;
+
+        .card:hover .service-icon {
+            transform: rotate(-5deg) scale(1.1);
         }
-        .service-icon {
-            width: 64px;
-            height: 64px;
-            background: var(--primary-light);
+
+        .feature-icon-box {
+            width: 62px;
+            height: 62px;
+            background: linear-gradient(135deg, var(--primary-light), #E8E4FF);
             border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 16px;
+            margin: 0 auto 18px;
             color: var(--primary);
-        }
-        .service-icon svg {
-            width: 30px;
-            height: 30px;
-        }
-        .hero-stats {
-            display: flex;
-            gap: 32px;
-            margin-top: 32px;
-            flex-wrap: wrap;
-        }
-        .hero-stat-item {
-            text-align: center;
-        }
-        .hero-stat-number {
             font-size: 1.6rem;
-            font-weight: 800;
-            color: var(--text);
+            transition: all 0.3s;
         }
-        .hero-stat-label {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
+
+        .card:hover .feature-icon-box {
+            transform: scale(1.15);
+            box-shadow: 0 8px 24px rgba(108, 92, 231, 0.2);
         }
-        .hero-mockup {
-            background: linear-gradient(135deg, #1e1b4b, #312e81);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+
+        .cta-section {
+            background: linear-gradient(135deg, #1A1A2E, #16213E);
+            position: relative;
+            overflow: hidden;
         }
-        .hero-mockup-header {
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(108, 92, 231, 0.15), transparent);
+            top: -200px;
+            right: -100px;
+            animation: moveGlow 8s ease-in-out infinite;
+        }
+
+        .cta-section::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 206, 201, 0.12), transparent);
+            bottom: -150px;
+            left: -80px;
+            animation: moveGlow 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes moveGlow {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(30px, -30px); }
+            66% { transform: translate(-20px, 20px); }
+        }
+
+        .brands-strip {
+            padding: 24px 0;
+            background: var(--bg-secondary);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .brands-scroll {
             display: flex;
-            gap: 6px;
-            margin-bottom: 16px;
+            gap: 48px;
+            animation: scrollBrands 25s linear infinite;
+            white-space: nowrap;
         }
-        .hero-mockup-dot {
-            width: 10px;
-            height: 10px;
+
+        @keyframes scrollBrands {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        .brand-item {
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            opacity: 0.5;
+            flex-shrink: 0;
+        }
+
+        .glow-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--success);
             border-radius: 50%;
+            animation: glowPulse 1.5s infinite;
+            margin-right: 8px;
         }
-        .hero-mockup-dot.red { background: #ef4444; }
-        .hero-mockup-dot.yellow { background: #f59e0b; }
-        .hero-mockup-dot.green { background: #10b981; }
-        .hero-mockup-body {
-            background: #0f172a;
-            border-radius: 14px;
-            padding: 18px;
-            color: #e2e8f0;
-            font-size: 0.8rem;
+
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 184, 148, 0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(0, 184, 148, 0); }
         }
-        .hero-mockup-line {
-            background: rgba(255,255,255,0.08);
-            padding: 8px 10px;
-            border-radius: 6px;
-            margin-bottom: 6px;
-            font-family: monospace;
-            font-size: 0.75rem;
+
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.7s ease forwards;
         }
-        .hero-mockup-line.active {
-            background: rgba(99,102,241,0.25);
-            border-left: 2px solid var(--primary);
+
+        .fade-in-up:nth-child(1) { animation-delay: 0.1s; }
+        .fade-in-up:nth-child(2) { animation-delay: 0.2s; }
+        .fade-in-up:nth-child(3) { animation-delay: 0.3s; }
+        .fade-in-up:nth-child(4) { animation-delay: 0.4s; }
+        .fade-in-up:nth-child(5) { animation-delay: 0.5s; }
+        .fade-in-up:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
         }
-        footer {
-            margin-top: 0;
+
+        @media (max-width: 768px) {
+            .hero-mockup { display: none; }
         }
     </style>
 </head>
@@ -119,20 +247,20 @@
     <header class="header">
         <div class="container">
             <nav class="navbar">
-                <a href="/web/index.html" class="navbar-brand">Web<span>Builder</span></a>
+                <a href="index.html" class="navbar-brand">Web<span>Builder</span></a>
                 
                 <ul class="navbar-menu">
-                    <li><a href="/web/index.html" class="active">Home</a></li>
-                    <li><a href="/web/services.html">Services</a></li>
-                    <li><a href="/web/portfolio.html">Portfolio</a></li>
-                    <li><a href="/web/pricing.html">Pricing</a></li>
-                    <li><a href="/web/about.html">About</a></li>
-                    <li><a href="/web/contact.html">Contact</a></li>
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="portfolio.html">Portfolio</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
                 </ul>
                 
                 <div class="navbar-actions">
-                    <a href="/web/builder.html" class="btn btn-outline btn-sm">Try Builder</a>
-                    <a href="/web/login.html" class="btn btn-primary btn-sm">Login</a>
+                    <a href="builder.html" class="btn btn-outline btn-sm">Try Builder</a>
+                    <a href="login.html" class="btn btn-primary btn-sm">Login</a>
                     <button class="navbar-toggle" aria-label="Menu">
                         <span></span><span></span><span></span>
                     </button>
@@ -144,13 +272,13 @@
     <section class="hero">
         <div class="container">
             <div class="hero-grid">
-                <div class="hero-content animate-fade-up">
-                    <span class="section-tag">Ethiopia's Web Platform</span>
+                <div class="hero-content fade-in-up">
+                    <span class="section-tag"><span class="glow-dot"></span>Ethiopia's Web Platform</span>
                     <h1>Build Your <span class="text-gradient">Professional Website</span> Today</h1>
                     <p>Custom development by expert developers or use our drag-and-drop builder. AI-powered solutions for Ethiopian businesses.</p>
                     <div class="hero-actions">
-                        <a href="/web/services.html" class="btn btn-primary btn-lg">Our Services</a>
-                        <a href="/web/builder.html" class="btn btn-outline btn-lg">Try Builder Free</a>
+                        <a href="services.html" class="btn btn-primary btn-lg">Our Services</a>
+                        <a href="builder.html" class="btn btn-outline btn-lg">Try Builder Free</a>
                     </div>
                     <div class="hero-stats">
                         <div class="hero-stat-item">
@@ -167,7 +295,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="hero-image animate-fade-in">
+                <div class="hero-image fade-in-up">
                     <div class="hero-mockup">
                         <div class="hero-mockup-header">
                             <span class="hero-mockup-dot red"></span>
@@ -186,6 +314,25 @@
         </div>
     </section>
 
+    <section class="brands-strip">
+        <div class="brands-scroll">
+            <span class="brand-item">✦ Ethiopian Businesses</span>
+            <span class="brand-item">✦ Restaurants</span>
+            <span class="brand-item">✦ Tech Startups</span>
+            <span class="brand-item">✦ Online Shops</span>
+            <span class="brand-item">✦ Agencies</span>
+            <span class="brand-item">✦ Portfolio Sites</span>
+            <span class="brand-item">✦ Blogs</span>
+            <span class="brand-item">✦ Ethiopian Businesses</span>
+            <span class="brand-item">✦ Restaurants</span>
+            <span class="brand-item">✦ Tech Startups</span>
+            <span class="brand-item">✦ Online Shops</span>
+            <span class="brand-item">✦ Agencies</span>
+            <span class="brand-item">✦ Portfolio Sites</span>
+            <span class="brand-item">✦ Blogs</span>
+        </div>
+    </section>
+
     <section class="section section-bg">
         <div class="container">
             <div class="section-header">
@@ -194,28 +341,28 @@
                 <p class="section-subtitle">Choose what works best for your business</p>
             </div>
             <div class="grid-2">
-                <div class="card animate-on-scroll">
+                <div class="card fade-in-up">
                     <div class="service-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                             <polyline points="16 18 22 12 16 6"></polyline>
                             <polyline points="8 6 2 12 8 18"></polyline>
                         </svg>
                     </div>
-                    <h3 style="font-size:1.3rem;margin-bottom:8px;">Custom Development</h3>
-                    <p style="color:#64748b;margin-bottom:16px;">We build your website from scratch with modern frameworks, AI integration, and custom features tailored to your business.</p>
-                    <a href="/web/services.html" class="btn btn-primary">Learn More</a>
+                    <h3 style="font-size:1.35rem;margin-bottom:10px;">Custom Development</h3>
+                    <p style="color:var(--text-secondary);margin-bottom:18px;">We build your website from scratch with modern frameworks, AI integration, and custom features tailored to your business.</p>
+                    <a href="services.html" class="btn btn-primary">Learn More</a>
                 </div>
-                <div class="card animate-on-scroll">
+                <div class="card fade-in-up">
                     <div class="service-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <rect x="3" y="3" width="18" height="18" rx="3" ry="3"></rect>
                             <line x1="3" y1="9" x2="21" y2="9"></line>
                             <line x1="9" y1="21" x2="9" y2="9"></line>
                         </svg>
                     </div>
-                    <h3 style="font-size:1.3rem;margin-bottom:8px;">Website Builder</h3>
-                    <p style="color:#64748b;margin-bottom:16px;">Drag and drop your own website in minutes. No coding needed. Choose from templates and publish instantly.</p>
-                    <a href="/web/builder.html" class="btn btn-primary">Start Building</a>
+                    <h3 style="font-size:1.35rem;margin-bottom:10px;">Website Builder</h3>
+                    <p style="color:var(--text-secondary);margin-bottom:18px;">Drag and drop your own website in minutes. No coding needed. Choose from templates and publish instantly.</p>
+                    <a href="builder.html" class="btn btn-primary">Start Building</a>
                 </div>
             </div>
         </div>
@@ -229,78 +376,47 @@
                 <p class="section-subtitle">Everything you need in one platform</p>
             </div>
             <div class="grid-3">
-                <div class="card text-center animate-on-scroll">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                            <line x1="1" y1="10" x2="23" y2="10"></line>
-                        </svg>
-                    </div>
+                <div class="card text-center fade-in-up">
+                    <div class="feature-icon-box">💳</div>
                     <h4>Local Payment</h4>
-                    <p style="color:#64748b;font-size:0.9rem;">Pay with Telebirr, CBE Birr, or bank card</p>
+                    <p style="color:var(--text-secondary);font-size:0.9rem;">Pay with Telebirr, CBE Birr, or bank card</p>
                 </div>
-                <div class="card text-center animate-on-scroll">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
-                        </svg>
-                    </div>
+                <div class="card text-center fade-in-up">
+                    <div class="feature-icon-box">📱</div>
                     <h4>Mobile Ready</h4>
-                    <p style="color:#64748b;font-size:0.9rem;">All sites work perfectly on phones</p>
+                    <p style="color:var(--text-secondary);font-size:0.9rem;">All sites work perfectly on phones</p>
                 </div>
-                <div class="card text-center animate-on-scroll">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"></path>
-                        </svg>
-                    </div>
+                <div class="card text-center fade-in-up">
+                    <div class="feature-icon-box">💬</div>
                     <h4>Fast Support</h4>
-                    <p style="color:#64748b;font-size:0.9rem;">Help via Telegram, phone, or email</p>
+                    <p style="color:var(--text-secondary);font-size:0.9rem;">Help via Telegram, phone, or email</p>
                 </div>
-                <div class="card text-center animate-on-scroll">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"></path>
-                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                        </svg>
-                    </div>
+                <div class="card text-center fade-in-up">
+                    <div class="feature-icon-box">🤖</div>
                     <h4>AI Powered</h4>
-                    <p style="color:#64748b;font-size:0.9rem;">Smart chatbots and analytics tools</p>
+                    <p style="color:var(--text-secondary);font-size:0.9rem;">Smart chatbots and analytics tools</p>
                 </div>
-                <div class="card text-center animate-on-scroll">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0110 0v4"></path>
-                        </svg>
-                    </div>
+                <div class="card text-center fade-in-up">
+                    <div class="feature-icon-box">🔒</div>
                     <h4>Free SSL</h4>
-                    <p style="color:#64748b;font-size:0.9rem;">Secure hosting with free certificate</p>
+                    <p style="color:var(--text-secondary);font-size:0.9rem;">Secure hosting with free certificate</p>
                 </div>
-                <div class="card text-center animate-on-scroll">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="2" y1="12" x2="22" y2="12"></line>
-                            <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"></path>
-                        </svg>
-                    </div>
+                <div class="card text-center fade-in-up">
+                    <div class="feature-icon-box">🌐</div>
                     <h4>Free Subdomain</h4>
-                    <p style="color:#64748b;font-size:0.9rem;">Get yourname.webbuilder.pages.dev</p>
+                    <p style="color:var(--text-secondary);font-size:0.9rem;">Get yourname.webbuilder.pages.dev</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="section section-dark text-center">
-        <div class="container">
-            <h2 class="section-title">Ready to Get Started?</h2>
-            <p class="section-subtitle" style="margin-bottom:32px;">Join Ethiopian businesses already using WebBuilder</p>
+    <section class="section cta-section text-center">
+        <div class="container" style="position:relative;z-index:1;">
+            <h2 class="section-title" style="color:white;">Ready to Get Started?</h2>
+            <p class="section-subtitle" style="color:var(--text-light);margin-bottom:36px;">Join Ethiopian businesses already using WebBuilder</p>
             <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
-                <a href="/web/services.html" class="btn btn-white btn-lg">Hire Us</a>
-                <a href="/web/builder.html" class="btn btn-outline btn-lg" style="border-color:white;color:white;">Build Yourself</a>
+                <a href="services.html" class="btn btn-white btn-lg">Hire Us</a>
+                <a href="builder.html" class="btn btn-outline btn-lg" style="border-color:rgba(255,255,255,0.4);color:white;">Build Yourself</a>
             </div>
         </div>
     </section>
@@ -309,31 +425,31 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <a href="/web/index.html" class="navbar-brand" style="color:white;">Web<span>Builder</span></a>
+                    <a href="index.html" class="navbar-brand" style="color:white;">Web<span>Builder</span></a>
                     <p>Professional websites and AI solutions for Ethiopian businesses. Custom development or build it yourself.</p>
                 </div>
                 <div class="footer-links">
                     <h4>Services</h4>
                     <ul>
-                        <li><a href="/web/services.html">Web Development</a></li>
-                        <li><a href="/web/services.html">AI Solutions</a></li>
-                        <li><a href="/web/services.html">UI/UX Design</a></li>
-                        <li><a href="/web/builder.html">Website Builder</a></li>
+                        <li><a href="services.html">Web Development</a></li>
+                        <li><a href="services.html">AI Solutions</a></li>
+                        <li><a href="services.html">UI/UX Design</a></li>
+                        <li><a href="builder.html">Website Builder</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
                     <h4>Company</h4>
                     <ul>
-                        <li><a href="/web/about.html">About</a></li>
-                        <li><a href="/web/portfolio.html">Portfolio</a></li>
-                        <li><a href="/web/contact.html">Contact</a></li>
-                        <li><a href="/web/pricing.html">Pricing</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="portfolio.html">Portfolio</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
                     <h4>Support</h4>
                     <ul>
-                        <li><a href="/web/contact.html">Help Center</a></li>
+                        <li><a href="contact.html">Help Center</a></li>
                         <li><a href="#">Documentation</a></li>
                         <li><a href="#">API</a></li>
                         <li><a href="#">Status</a></li>
@@ -341,7 +457,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 WebBuilder. All rights reserved. Made in Ethiopia.</p>
+                <p>&copy; 2026 WebBuilder. All rights reserved. Made in Ethiopia with ❤️</p>
             </div>
         </div>
     </footer>
