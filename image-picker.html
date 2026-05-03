@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Picker - WebBuilder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .picker-modal {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 750px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .picker-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .picker-header h2 { font-size: 1.2rem; font-weight: 700; color: #1e293b; }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-btn:hover { background: #f1f5f9; }
+        
+        .picker-tabs {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .picker-tab {
+            flex: 1;
+            padding: 14px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .picker-tab.active {
+            color: #6366f1;
+            border-bottom-color: #6366f1;
+        }
+        
+        .picker-body {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 50vh;
+        }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+        
+        .upload-area:hover {
+            border-color: #6366f1;
+            background: #eef2ff;
+        }
+        
+        .upload-area .icon { font-size: 2.5rem; margin-bottom: 8px; }
+        .upload-area p { color: #64748b; font-size: 0.9rem; }
+        
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        
+        .image-item {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .image-item:hover {
+            border-color: #6366f1;
+            transform: scale(1.02);
+        }
+        
+        .image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .image-item .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 6px;
+            font-size: 0.7rem;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.2s;
+        }
+        
+        .image-item:hover .overlay { opacity: 1; }
+        
+        .category-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .cat-btn {
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        
+        .cat-btn.active {
+            background: #6366f1;
+            color: white;
+            border-color: #6366f1;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+        
+        .storage-info {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 12px;
+            text-align: center;
+        }
+        
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+        }
+        
+        @media (max-width: 600px) {
+            .image-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="picker-modal">
+        <div class="picker-header">
+            <h2>Pick an Image</h2>
+            <button class="close-btn" onclick="window.close()">&times;</button>
+        </div>
+        
+        <div class="picker-tabs">
+            <button class="picker-tab active" onclick="switchTab('uploads')">My Uploads</button>
+            <button class="picker-tab" onclick="switchTab('store')">Free Image Store</button>
+        </div>
+        
+        <div class="picker-body">
+            
+            <div class="tab-content active" id="tab-uploads">
+                <div class="upload-area" onclick="document.getElementById('file-input').click()">
+                    <div class="icon">+</div>
+                    <p>Click to upload images</p>
+                    <p style="font-size:0.8rem;">JPG, PNG, WebP up to 5MB</p>
+                </div>
+                <input type="file" id="file-input" accept="image/*" multiple hidden onchange="handleFileUpload(this.files)">
+                
+                <div class="image-grid" id="uploads-grid">
+                    <div class="empty-message">No images uploaded yet</div>
+                </div>
+                <div class="storage-info" id="storage-info">0/10 images used (Free Plan)</div>
+            </div>
+            
+            <div class="tab-content" id="tab-store">
+                <input type="text" class="search-box" placeholder="Search images..." oninput="renderStore()" id="store-search">
+                
+                <div class="category-filters">
+                    <button class="cat-btn active" onclick="filterStore('all', this)">All</button>
+                    <button class="cat-btn" onclick="filterStore('restaurant', this)">Restaurant</button>
+                    <button class="cat-btn" onclick="filterStore('business', this)">Business</button>
+                    <button class="cat-btn" onclick="filterStore('nature', this)">Nature</button>
+                    <button class="cat-btn" onclick="filterStore('technology', this)">Technology</button>
+                    <button class="cat-btn" onclick="filterStore('ethiopian', this)">Ethiopian</button>
+                </div>
+                
+                <div class="image-grid" id="store-grid"></div>
+                <div class="storage-info">500+ free images available</div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <script>
+        const FREE_STORE = [
+            { id: 'cafe1', url: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=300', category: 'restaurant', name: 'Coffee Cup' },
+            { id: 'cafe2', url: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=300', category: 'restaurant', name: 'Cafe Interior' },
+            { id: 'food1', url: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300', category: 'restaurant', name: 'Pancakes' },
+            { id: 'food2', url: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300', category: 'restaurant', name: 'Salad' },
+            { id: 'office1', url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=300', category: 'business', name: 'Modern Office' },
+            { id: 'office2', url: 'https://images.unsplash.com/photo-1497215842964-222b430dc094?w=300', category: 'business', name: 'Team Meeting' },
+            { id: 'biz1', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300', category: 'business', name: 'Professional' },
+            { id: 'biz2', url: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=300', category: 'business', name: 'Workspace' },
+            { id: 'nature1', url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=300', category: 'nature', name: 'Landscape' },
+            { id: 'nature2', url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300', category: 'nature', name: 'Forest' },
+            { id: 'tech1', url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=300', category: 'technology', name: 'Circuit' },
+            { id: 'tech2', url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=300', category: 'technology', name: 'Digital' },
+            { id: 'eth1', url: 'https://images.unsplash.com/photo-1527933051024-f41d748e5da6?w=300', category: 'ethiopian', name: 'Coffee Ceremony' },
+            { id: 'eth2', url: 'https://images.unsplash.com/photo-1590073242678-70ee3fc28e8e?w=300', category: 'ethiopian', name: 'Addis Ababa' },
+            { id: 'fash1', url: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=300', category: 'fashion', name: 'Shopping' },
+            { id: 'fash2', url: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=300', category: 'fashion', name: 'Clothing' }
+        ];
+        
+        let clientImages = JSON.parse(localStorage.getItem('wb_client_images') || '[]');
+        let selectedCategory = 'all';
+        
+        function switchTab(tab) {
+            document.querySelectorAll('.picker-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            if (tab === 'uploads') {
+                document.querySelectorAll('.picker-tab')[0].classList.add('active');
+                document.getElementById('tab-uploads').classList.add('active');
+                renderUploads();
+            } else {
+                document.querySelectorAll('.picker-tab')[1].classList.add('active');
+                document.getElementById('tab-store').classList.add('active');
+                renderStore();
+            }
+        }
+        
+        function handleFileUpload(files) {
+            for (const file of files) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    clientImages.push({
+                        id: 'img-' + Date.now(),
+                        url: e.target.result,
+                        name: file.name
+                    });
+                    localStorage.setItem('wb_client_images', JSON.stringify(clientImages));
+                    renderUploads();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function renderUploads() {
+            const grid = document.getElementById('uploads-grid');
+            const info = document.getElementById('storage-info');
+            
+            if (clientImages.length === 0) {
+                grid.innerHTML = '<div class="empty-message">No images uploaded yet</div>';
+            } else {
+                grid.innerHTML = clientImages.map(img => `
+                    <div class="image-item" onclick="selectImage('${img.url}')">
+                        <img src="${img.url}" alt="${img.name}">
+                        <div class="overlay">Click to use</div>
+                    </div>
+                `).join('');
+            }
+            
+            info.textContent = `${clientImages.length}/10 images used (Free Plan)`;
+        }
+        
+        function renderStore() {
+            const grid = document.getElementById('store-grid');
+            const searchTerm = (document.getElementById('store-search')?.value || '').toLowerCase();
+            
+            let images = FREE_STORE;
+            if (selectedCategory !== 'all') {
+                images = images.filter(img => img.category === selectedCategory);
+            }
+            if (searchTerm) {
+                images = images.filter(img => img.name.toLowerCase().includes(searchTerm));
+            }
+            
+            grid.innerHTML = images.map(img => `
+                <div class="image-item" onclick="selectImage('${img.url}')">
+                    <img src="${img.url}" alt="${img.name}">
+                    <div class="overlay">${img.name}</div>
+                </div>
+            `).join('');
+        }
+        
+        function filterStore(category, btn) {
+            selectedCategory = category;
+            document.querySelectorAll('#tab-store .cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderStore();
+        }
+        
+        function selectImage(url) {
+            if (window.opener && window.opener.Builder) {
+                window.opener.Builder.insertImage(url);
+            }
+            window.close();
+        }
+        
+        renderUploads();
+        renderStore();
+    </script>
+    
+</body>
+</html>
